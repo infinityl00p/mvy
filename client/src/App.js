@@ -1,6 +1,9 @@
 import React from 'react';
+import axios from 'axios';
 
 import CreateChallengePage from './components/CreateChallengePage';
+
+const ROOT_URL = 'http://localhost:3001/';
 
 class App extends React.Component {
   constructor() {
@@ -15,7 +18,14 @@ class App extends React.Component {
 
   createChallenge(challengeText) {
     console.log(challengeText);
-    this.setState({ challenges: [...this.state.challenges, challengeText] });
+    if (challengeText) {
+      this.setState({ challenges: [...this.state.challenges, challengeText] });
+
+      // const request = axios.post(
+      //   ROOT_URL + 'challenges',
+      //   { challengeText: challengeText }
+      // );
+    }
   }
 
   render() {
