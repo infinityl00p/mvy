@@ -1,10 +1,36 @@
-import React, { Component } from 'react';
+import React from 'react';
+import axios from 'axios';
 
-class App extends Component {
+import CreateChallengePage from './components/CreateChallengePage';
+
+const ROOT_URL = 'http://localhost:3001/';
+
+class App extends React.Component {
+  constructor() {
+    super();
+
+    this.createChallenge = this.createChallenge.bind(this);
+
+    this.state = {
+      challenges: []
+    }
+  }
+
+  createChallenge(challengeText) {
+    if (challengeText) {
+      this.setState({ challenges: [...this.state.challenges, challengeText] });
+
+      axios.post(
+        ROOT_URL + 'challenges',
+        { challengeText: challengeText }
+      );
+    }
+  }
+
   render() {
     return (
       <div className='App'>
-        <h1>Hello, world!</h1>
+        <CreateChallengePage onCreate={this.createChallenge} />
       </div>
     );
   }
