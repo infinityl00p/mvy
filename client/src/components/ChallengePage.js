@@ -8,20 +8,20 @@ class ChallengePage extends React.Component {
     super(props);
 
     this.state = {
-      challenge: null,
-      temp: this.props.params.id
+      challengeText: ''
     };
 
     var challengeId = this.props.params.id;
-    // const request = axios.get(
-    //   ROOT_URL + 'challenges/' + challengeId
-    // ).then((response) => {
-    //   this.setState({ challenge: response.data.challenge });
-    // });
+
+    axios.get(
+      ROOT_URL + 'challenges/' + challengeId
+    ).then((response) => {
+      this.setState({ challengeText: response.data.challengeText });
+    });
   }
   render() {
     return(
-      <h1>challenge #: {this.state.temp}</h1>
+      <h1>challenge #: {this.state.challengeText}</h1>
     );
   }
 }

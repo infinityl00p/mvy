@@ -17,14 +17,13 @@ class App extends React.Component {
   }
 
   createChallenge(challengeText) {
-    console.log(challengeText);
     if (challengeText) {
       this.setState({ challenges: [...this.state.challenges, challengeText] });
 
-      // const request = axios.post(
-      //   ROOT_URL + 'challenges',
-      //   { challengeText: challengeText }
-      // );
+      axios.post(
+        ROOT_URL + 'challenges',
+        { challengeText: challengeText }
+      );
     }
   }
 
