@@ -1,4 +1,5 @@
 const express = require('express');
+const mysql = require('mysql');
 
 const app = express();
 app.set('port', (process.env.PORT || 3001));
@@ -11,44 +12,34 @@ if (process.env.NODE_ENV === 'production') {
   app.use(express.static('client/build'));
 }
 
-// TODO: Replace with DB:
-var challenges = [
-  {
-    id: 1,
-    challengeText: 'This is challenge one.'
-  },
-  {
-    id: 2,
-    challengeText: 'This is challenge two'
+// Setup Database connection
+const connection = mysql.createConnection({
+  host : 'localhost',
+  user : 'root',
+  password : '',
+  database : 'mvy_db'
+})
+
+//Post challenge to challenge table
+app.post('/challenges/:id/users/:uid', function (req, res) {
+  if(!req.body) {
+    return res.status(400).json({error: 'Missing challenge data'});
   }
-];
-
-// TODO: Clean these up so they are in their own files
-app.post('/challenges', function (req, res) {
-  if(!req.body) return res.sendStatus(400);
-
-  var challenge = {
-    id: challenges.length + 1,
-    challengeText: req.body.challengeText
-  };
-  challenges.push(challenge);
-
-  res.sendStatus(200);
 });
 
-// For preloading challenges
-app.get('/challenges', function (req, res) {
-  res.json(challenges);
-});
-
+//get a single challenge
 app.get('/challenges/:challengeId', function (req, res) {
-  // TODO: Better error handling
-  if(req.params.challengeId > challenges.length+1) {
-    return res.sendStatus(404);
-  }
+  const challengeId = req.params.challengeId;
 
-  var challenge = challenges[req.params.challengeId-1];
-  res.json(challenge);
+  connection.query('SELECT * FROM challenges where id=?', challengeId, function(err, results) {
+    if (err) {
+      res.status(400).json({ error: 'Invalid database query'});
+    } else if (results.length!= 0) {
+      res.json(results);
+    } else {
+      res.status(400).json({ error: 'Bad challenge id'});
+    }
+  });
 });
 
 
