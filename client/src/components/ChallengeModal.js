@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Form, FormGroup, Col, ControlLabel, FormControl, Checkbox, Button } from 'react-bootstrap';
+import { Modal, Form, FormGroup, Col, ControlLabel, FormControl, Button } from 'react-bootstrap';
 
 class ChallengeModal extends React.Component {
   constructor(props) {
@@ -9,7 +9,6 @@ class ChallengeModal extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    this.props.toggleShowModal();
 
     var challenge = {
       category: e.target[0].value,
@@ -17,6 +16,7 @@ class ChallengeModal extends React.Component {
       type: e.target[2].value
     }
 
+    this.props.toggleShowModal();
     this.props.handleSubmit(challenge);
   }
 
@@ -56,7 +56,10 @@ class ChallengeModal extends React.Component {
               </Col>
             </FormGroup>
             <FormGroup>
-              <Col smOffset={10} sm={10}>
+              <Col smOffset={9} sm={10}>
+                <Button type="reset">
+                  Clear
+                </Button>
                 <Button type="submit">
                   Submit
                 </Button>
