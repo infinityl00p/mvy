@@ -29,7 +29,7 @@ class ChallengeDashboard extends React.Component {
         <ChallengeModal
           showModal={this.state.showModal}
           toggleShowModal={this.toggleShowModal}
-          handleSubmit={this.props.onCreate}
+          onCreate={this.props.onCreate}
         />
       </div>
     );
