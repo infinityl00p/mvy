@@ -5,10 +5,14 @@ import ChallengeDashboard from './components/ChallengeDashboard';
 const ROOT_URL = 'http://localhost:3001/';
 
 class App extends React.Component {
-  onCreate(challenge) {
+  createChallenge(challenge) {
     axios.post(
       ROOT_URL + 'challenges',
-      { challenge: challenge }
+      {
+        category: challenge.category,
+        description: challenge.description,
+        type: challenge.type
+      }
     );
   }
 
