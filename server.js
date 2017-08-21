@@ -52,12 +52,10 @@ app.route('/challenges')
       }
     })
   })
-  //TODO: Add specific users to the table, client side have find friend by username and attach both usernames
   .post(function (req, res) {
     if(!req.body) {
       return res.status(400).json({error: 'Missing challenge data'});
     }
-    console.log(req.body);
 
     const {category} = req.body;
     const {description} = req.body;
@@ -99,6 +97,27 @@ app.post('/challenges/:cid/users/:uid', function (req, res) {
   const {uid} = req.params;
 
   //This should be passed client side so we have clients date and not servers date
+  var today = new Date();
+  today.toISOString().substring(0, 10);
+
+  connection.query('INSERT INTO tally (cid, uid, date_completed) VALUES (?, ?, ?)', [cid, uid, today], function(err, results) {
+    if (err) {
+      return res.status(400).json({
+        error: 'Database Error',
+        cid: cid,
+        uid: uid
+      });
+    } else {
+      return res.status(200).json({success: 'Challenge successfully updated'});
+    }
+  })
+});
+
+app.post('/challenges/:cid/users/:uid', function (req, res) {
+  const {cid} = req.params;
+  const {uid} = req.params;
+
+  //TODO: This should be passed client side so we have clients date and not servers date
   var today = new Date();
   today.toISOString().substring(0, 10);
 

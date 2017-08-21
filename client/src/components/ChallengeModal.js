@@ -10,15 +10,23 @@ class ChallengeModal extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
 
-    var challenge = {
-      category: e.target[0].value,
-      description: e.target[1].value,
-      type: e.target[2].value
-    }
+    var category = e.target[0].value;
+    var description = e.target[1].value;
+    var type = e.target[2].value;
 
-    //TODO: Error handle if any of the challenge parameters are left empty
-    this.props.toggleShowModal();
-    this.props.handleSubmit(challenge);
+    if (category && description && type) {
+      var challenge = {
+        category: category,
+        description: description,
+        type: type
+      }
+
+      //TODO: Error handle if any of the challenge parameters are left empty
+      this.props.toggleShowModal();
+      this.props.onCreate(challenge);
+    } else {
+      alert("Warning: Please fill all required fields");
+    }
   }
 
   render() {
