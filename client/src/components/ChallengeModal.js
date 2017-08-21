@@ -16,6 +16,7 @@ class ChallengeModal extends React.Component {
       type: e.target[2].value
     }
 
+    //TODO: Error handle if any of the challenge parameters are left empty
     this.props.toggleShowModal();
     this.props.handleSubmit(challenge);
   }
