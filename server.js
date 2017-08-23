@@ -65,7 +65,7 @@ app.route('/challenges')
       if (err) {
         return res.status(400).json({ error: 'Database error'});
       } else {
-        return res.status(200).json({success: 'Challenge successfully created'});
+        return res.status(200).json(results);
       }
     });
   });
@@ -80,8 +80,12 @@ app.get('/challenges/:cid', function (req, res) {
         error: 'Database error',
         cid: cid
       });
-    } else if (results.length!= 0) {
-      return res.json(results);
+    } else if (results.length != 0) {
+      return res.json({
+        category: results[0].category,
+        description: results[0].description,
+        type: results[0].type
+      });
     } else {
       return res.status(400).json({
         error: 'Bad challenge id',
@@ -137,7 +141,7 @@ app.post('/challenges/:cid/users/:uid', function (req, res) {
 
 app.put('/challenges/:id', function (req, res) {
   const {id} = req.params;
-  //update category, description, type
+
   const {category} = req.body;
   const {description} = req.body;
   const {type} = req.body;
