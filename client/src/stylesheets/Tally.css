@@ -1,0 +1,11 @@
+.divider {
+  height: 510px;
+  position: absolute;
+  width: 100%;
+}
+
+.inner {
+  height: inherit;
+  width: 40%;
+  border-right: 1px solid black;
+}

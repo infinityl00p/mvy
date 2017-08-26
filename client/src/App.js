@@ -1,7 +1,8 @@
 import React from 'react';
 import axios from 'axios';
-import ChallengeDashboard from './components/ChallengeDashboard';
+import Dashboard from './components/Dashboard';
 import base62 from 'base62';
+import './stylesheets/App.css';
 
 const ROOT_URL = 'http://localhost:3000/';
 
@@ -30,10 +31,11 @@ class App extends React.Component {
   render() {
     if(this.state.challengeUrl != null) {
       return(
-        <div className='App'>
-          <ChallengeDashboard onCreate={this.createChallenge} />
+        <div id='App'>
+          <Dashboard onCreate={this.createChallenge} />
           <input
-            type="text"
+            className='challenge-url'
+            type='text'
             readOnly
             value={this.state.challengeUrl}
           />
@@ -42,7 +44,7 @@ class App extends React.Component {
     }
     return(
       <div className='App'>
-        <ChallengeDashboard onCreate={this.createChallenge} />
+        <Dashboard onCreate={this.createChallenge} />
       </div>
     );
   }

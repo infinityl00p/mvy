@@ -1,9 +1,9 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
 import ChallengeModal from './ChallengeModal';
-import '../stylesheets/ChallengeDashboard.css';
+import '../stylesheets/Dashboard.css';
 
-class ChallengeDashboard extends React.Component {
+class Dashboard extends React.Component {
   constructor() {
     super();
 
@@ -36,4 +36,4 @@ class ChallengeDashboard extends React.Component {
   }
 }
 
-export default ChallengeDashboard;
+export default Dashboard;
