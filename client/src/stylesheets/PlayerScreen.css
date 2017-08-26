@@ -1,0 +1,17 @@
+.player-screen {
+  text-align: center;
+}
+
+.points-title {
+  margin-bottom: 50px;
+  text-decoration: underline;
+}
+
+.points {
+  font-size: 150px;
+}
+
+.name {
+  font-size: 60px;
+  margin-top: 50px;
+}

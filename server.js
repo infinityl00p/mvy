@@ -22,7 +22,6 @@ const connection = mysql.createConnection({
   database : 'mvy_db'
 });
 
-
 app.post('/users', function (req, res) {
   if(!req.body) {
     return res.status(400).json({error: 'Missing user data'});
@@ -40,6 +39,22 @@ app.post('/users', function (req, res) {
     }
   });
 });
+
+
+app.get('/users/:uid', function (req,res) {
+  const {uid} = req.params;
+
+  connection.query('SELECT name from users where id=?', uid, function(err, results) {
+    if (err) {
+      return res.status(400).json({
+        error: 'Database error - unable to get user',
+        id: uid
+      });
+    } else {
+      res.json(results);
+    }
+  })
+})
 
 
 app.route('/challenges')
@@ -96,13 +111,46 @@ app.get('/challenges/:cid', function (req, res) {
 });
 
 
-app.post('/challenges/:cid/users/:uid', function (req, res) {
+app.get('/challenges/:cid/users', function(req,res) {
+  const {cid} = req.params;
+
+  connection.query('SELECT * FROM user_challenges where cid=?', cid, function(err, results) {
+    if (err) {
+      return res.status(400).json({
+        error: 'Database error',
+        cid: cid
+      });
+    } else {
+      res.json({
+        users: [results[0].uid, results[1].uid]
+      });
+    }
+  })
+})
+
+app.route('/challenges/:cid/users/:uid')
+  .get(function(req,res) {
+    const {cid} = req.params;
+    const {uid} = req.params;
+
+    //TODO: get the last date completed
+    connection.query('SELECT count(id) AS tally, max(date_completed) as lastDate FROM tally where uid=? and cid=?', [uid, cid], function(err,results) {
+      if (err) {
+        return res.status(400).json({
+          error: 'Database error',
+          cid: cid,
+          uid: uid
+        });
+
+      } else {
+        return res.json(results);
+      }
+    })
+  })
+  .post(function(req, res) {
   const {cid} = req.params;
   const {uid} = req.params;
-
-  //This should be passed client side so we have clients date and not servers date
-  var today = new Date();
-  today.toISOString().substring(0, 10);
+  const {today} = req.body;
 
   connection.query('INSERT INTO tally (cid, uid, date_completed) VALUES (?, ?, ?)', [cid, uid, today], function(err, results) {
     if (err) {
@@ -116,6 +164,7 @@ app.post('/challenges/:cid/users/:uid', function (req, res) {
     }
   })
 });
+
 
 app.post('/challenges/:cid/users/:uid', function (req, res) {
   const {cid} = req.params;
