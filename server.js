@@ -3,9 +3,36 @@ const mysql = require('mysql');
 const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const session = require('client-sessions');
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+app.use(session({
+  cookieName: 'session',
+  secret: 'moneymoneymoneyteam',
+  duration: 30 * 60 * 1000,
+  activeDuration: 5 * 60 * 1000,
+  httpOnly: true,
+  secure: true,
+  ephemeral: true
+}));
+
+app.use(function(req,res, next) {
+  if(req.session && req.session.user) {
+    connection.query('SELECT * FROM users WHERE username=?', username, function(err, user) {
+      if (user) {
+        req.user = user[0];
+        delete req.user.password;
+        req.session.user = user[0];
+        res.locals.user = user[0];
+      }
+      next();
+    });
+  } else {
+    next();
+  }
+})
 
 app.set('port', (process.env.PORT || 3001));
 
@@ -21,6 +48,29 @@ const connection = mysql.createConnection({
   password : '',
   database : 'mvy_db'
 });
+
+app.post('/login', function(req, res) {
+  const {username} = req.body;
+  const {password} = req.body;
+
+  connection.query('SELECT * FROM users WHERE username=?', username, function(err, user) {
+    if (err) {
+      return res.status(400).json({
+        error: 'Database error',
+        username: username
+      });
+    } else {
+      if (req.body.password === user[0].password) {
+        //TODO: don't pass passworD?
+        req.session.user = user[0];
+        return res.json(user[0]);
+      } else {
+        return res.status(400).json({ error: 'Password Incorrect'});
+      }
+    }
+  })
+});
+
 
 app.post('/users', function (req, res) {
   if(!req.body) {
@@ -59,6 +109,7 @@ app.get('/users/:uid', function (req,res) {
 
 app.route('/challenges')
   .get(function (req, res) {
+    console.log(req.session);
     connection.query ('SELECT * FROM challenges', function(err, results) {
       if (err) {
         return res.status(400).json({ error: 'Database error - unable to get challenges'});
