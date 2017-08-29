@@ -20,7 +20,7 @@ app.use(session({
 
 app.use(function(req,res, next) {
   if(req.session && req.session.user) {
-    connection.query('SELECT * FROM users WHERE username=?', username, function(err, user) {
+    connection.query('SELECT * FROM users WHERE email=?', req.session.user.email, function(err, user) {
       if (user) {
         req.user = user[0];
         delete req.user.password;
@@ -49,28 +49,51 @@ const connection = mysql.createConnection({
   database : 'mvy_db'
 });
 
-app.post('/login', function(req, res) {
-  const {username} = req.body;
+app.post('/signin', function(req, res) {
+  const {email} = req.body;
   const {password} = req.body;
 
-  connection.query('SELECT * FROM users WHERE username=?', username, function(err, user) {
+  //TODO: better error catching
+  connection.query('SELECT * FROM users WHERE email=?', email, function(err, user) {
     if (err) {
       return res.status(400).json({
         error: 'Database error',
-        username: username
+        email: email
       });
-    } else {
-      if (req.body.password === user[0].password) {
-        //TODO: don't pass passworD?
+    } else if(user[0].password) {
+      if (password === user[0].password) {
         req.session.user = user[0];
-        return res.json(user[0]);
+        return res.status(200).json({
+          success: 'successfully logged in',
+          email: user[0].email
+        });
       } else {
-        return res.status(400).json({ error: 'Password Incorrect'});
+        return res.status(400).json({
+          error: 'Password Incorrect',
+          email: user[0].email
+        });
       }
+    } else {
+      return res.status(400).json({
+        error: 'Email does not exist',
+      });
     }
   })
 });
 
+app.get('/checkAuth', function(req,res) {
+  console.log(req);
+  if(!req.session.user) {
+    res.status(400).json({error: 'Session not Found'});
+  } else {
+    res.status(200);
+  }
+})
+
+app.get('/signout', function(req,res) {
+  req.session.reset();
+  res.status(200).json({ success: 'successfully signed out' });
+})
 
 app.post('/users', function (req, res) {
   if(!req.body) {
@@ -78,10 +101,10 @@ app.post('/users', function (req, res) {
   }
 
   const {name} = req.body;
-  const {username} = req.body;
+  const {email} = req.body;
   const {password} = req.body;
 
-  connection.query('INSERT INTO users (name, username, password) VALUES (?, ?, ?)', [name, username, password], function(err, results) {
+  connection.query('INSERT INTO users (name, email, password) VALUES (?, ?, ?)', [name, email, password], function(err, results) {
     if (err) {
       return res.status(400).json({ error: 'Database error'});
     } else {
