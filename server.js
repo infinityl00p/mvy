@@ -1,14 +1,44 @@
 const express = require('express');
 const mysql = require('mysql');
 const app = express();
-const bodyParser = require('body-parser');
 const cors = require('cors');
-const session = require('client-sessions');
+
+const session = require('express-session');
+const passport = require('passport');
+const morgan = require('morgan');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const LocalStrategy = require('passport-local').Strategy;
+
 app.use(cors());
+app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 app.use(session({
+  secret: 'moneymoneymoneyteam',
+  resave: true,
+  saveUninitialized: false,
+  cookie: {
+    path: '/',
+    httpOnly: true,
+    secure: false,
+    maxAge: 1000 * 60 * 60 * 24
+  }
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Express only serves static assets in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static('client/build'));
+}
+
+app.set('port', (process.env.PORT || 3001));
+
+/*app.use(session({
   cookieName: 'session',
   secret: 'moneymoneymoneyteam',
   duration: 30 * 60 * 1000,
@@ -16,8 +46,9 @@ app.use(session({
   httpOnly: true,
   secure: true,
   ephemeral: true
-}));
+}));*/
 
+/*
 app.use(function(req,res, next) {
   if(req.session && req.session.user) {
     connection.query('SELECT * FROM users WHERE email=?', req.session.user.email, function(err, user) {
@@ -32,14 +63,7 @@ app.use(function(req,res, next) {
   } else {
     next();
   }
-})
-
-app.set('port', (process.env.PORT || 3001));
-
-// Express only serves static assets in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static('client/build'));
-}
+})*/
 
 // Setup Database connection
 const connection = mysql.createConnection({
@@ -49,49 +73,50 @@ const connection = mysql.createConnection({
   database : 'mvy_db'
 });
 
-app.post('/signin', function(req, res) {
-  const {email} = req.body;
-  const {password} = req.body;
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
 
-  //TODO: better error catching
+passport.deserializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.use(new LocalStrategy({
+  usernameField: 'email',
+  passwordField: 'password',
+},
+function(email, password, done) {
   connection.query('SELECT * FROM users WHERE email=?', email, function(err, user) {
     if (err) {
-      return res.status(400).json({
-        error: 'Database error',
-        email: email
-      });
-    } else if(user[0].password) {
-      if (password === user[0].password) {
-        req.session.user = user[0];
-        return res.status(200).json({
-          success: 'successfully logged in',
-          email: user[0].email
-        });
-      } else {
-        return res.status(400).json({
-          error: 'Password Incorrect',
-          email: user[0].email
-        });
-      }
-    } else {
-      return res.status(400).json({
-        error: 'Email does not exist',
-      });
+      return done(err);
     }
-  })
+    if (!user.length) {
+      return done(null, false);
+    }
+    if (user[0].password !== password) {
+      return done(null, false);
+    }
+    return done(null, user[0]);
+  });
+}
+));
+
+
+
+app.post('/signin', passport.authenticate('local'), function(req, res) {
+  return res.send('login success!');
 });
 
 app.get('/checkAuth', function(req,res) {
-  console.log(req);
-  if(!req.session.user) {
+  if(!req.session.passport.user) {
     res.status(400).json({error: 'Session not Found'});
   } else {
-    res.status(200);
+    res.sendStatus(200);
   }
 })
 
 app.get('/signout', function(req,res) {
-  req.session.reset();
+  req.session.destroy();
   res.status(200).json({ success: 'successfully signed out' });
 })
 
@@ -132,7 +157,6 @@ app.get('/users/:uid', function (req,res) {
 
 app.route('/challenges')
   .get(function (req, res) {
-    console.log(req.session);
     connection.query ('SELECT * FROM challenges', function(err, results) {
       if (err) {
         return res.status(400).json({ error: 'Database error - unable to get challenges'});
