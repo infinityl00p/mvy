@@ -2,34 +2,12 @@ const express = require('express');
 const mysql = require('mysql');
 const app = express();
 const cors = require('cors');
-
 const session = require('express-session');
 const passport = require('passport');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const LocalStrategy = require('passport-local').Strategy;
-
-app.use(cors());
-app.use(morgan('dev'));
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(cookieParser());
-
-app.use(session({
-  secret: 'moneymoneymoneyteam',
-  resave: true,
-  saveUninitialized: false,
-  cookie: {
-    path: '/',
-    httpOnly: true,
-    secure: false,
-    maxAge: 1000 * 60 * 60 * 24
-  }
-}));
-
-app.use(passport.initialize());
-app.use(passport.session());
 
 // Express only serves static assets in production
 if (process.env.NODE_ENV === 'production') {
@@ -38,32 +16,26 @@ if (process.env.NODE_ENV === 'production') {
 
 app.set('port', (process.env.PORT || 3001));
 
-/*app.use(session({
-  cookieName: 'session',
+app.use(cors({
+  credentials: true,
+  origin: 'http://localhost:3000'
+}));
+app.use(morgan('dev'));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(cookieParser());
+app.use(session({
   secret: 'moneymoneymoneyteam',
-  duration: 30 * 60 * 1000,
-  activeDuration: 5 * 60 * 1000,
-  httpOnly: true,
-  secure: true,
-  ephemeral: true
-}));*/
-
-/*
-app.use(function(req,res, next) {
-  if(req.session && req.session.user) {
-    connection.query('SELECT * FROM users WHERE email=?', req.session.user.email, function(err, user) {
-      if (user) {
-        req.user = user[0];
-        delete req.user.password;
-        req.session.user = user[0];
-        res.locals.user = user[0];
-      }
-      next();
-    });
-  } else {
-    next();
+  resave: true,
+  saveUninitialized: false,
+  cookie: {
+    path: '/',
+    originalMaxAge: 1000 * 60 * 60 * 24
   }
-})*/
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 // Setup Database connection
 const connection = mysql.createConnection({
@@ -74,45 +46,61 @@ const connection = mysql.createConnection({
 });
 
 passport.serializeUser(function(user, done) {
-  done(null, user);
+  done(null, user.id);
 });
 
 passport.deserializeUser(function(user, done) {
-  done(null, user);
+  connection.query('SELECT * FROM users WHERE id=?', user, function(err, userId) {
+    if (err) {
+      res.status(400).json({
+        error: 'Database Error',
+        id: userId[0]
+      });
+    }
+
+    done(err, userId[0]);
+  });
 });
 
 passport.use(new LocalStrategy({
   usernameField: 'email',
   passwordField: 'password',
-},
-function(email, password, done) {
-  connection.query('SELECT * FROM users WHERE email=?', email, function(err, user) {
-    if (err) {
-      return done(err);
-    }
-    if (!user.length) {
-      return done(null, false);
-    }
-    if (user[0].password !== password) {
-      return done(null, false);
-    }
-    return done(null, user[0]);
-  });
-}
+  },
+  function(email, password, done) {
+    connection.query('SELECT * FROM users WHERE email=?', email, function(err, user) {
+      if (err) {
+        return done(err);
+      }
+      if (!user.length) {
+        return done(null, false, { message: 'Incorrect email.' });
+      }
+      if (user[0].password !== password) {
+        return done(null, false, { message: 'Incorrect password.' });
+      }
+      return done(null, user[0]);
+    });
+  }
 ));
-
-
 
 app.post('/signin', passport.authenticate('local'), function(req, res) {
   return res.send('login success!');
 });
 
-app.get('/checkAuth', function(req,res) {
-  if(!req.session.passport.user) {
-    res.status(400).json({error: 'Session not Found'});
-  } else {
-    res.sendStatus(200);
+function isAuthenticated (req,res,next){
+  if(req.session.passport.user){
+    return next();
   }
+  else
+     return res.status(401).json({
+       error: 'User not authenticated'
+     })
+
+}
+
+app.get('/checkauth', isAuthenticated, function(req,res) {
+  res.status(200).json({
+    status: 'User Authenticated!'
+  });
 })
 
 app.get('/signout', function(req,res) {

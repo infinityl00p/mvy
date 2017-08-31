@@ -9,11 +9,23 @@ handleSubmit(e) {
   e.preventDefault();
 
   if (e.target.email.value && e.target.password.value) {
-    return axios.post(ROOT_URL + 'signin', {
-      email: e.target.email.value,
-      password: e.target.password.value
-    }).then((response) => {
-      console.log(response);
+    return axios(ROOT_URL + 'signin', {
+      method: "post",
+      data: {
+        email: e.target.email.value,
+        password: e.target.password.value
+      },
+      withCredentials: true
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+    .then((response) => {
+      if (response.status === 200) {
+        //TODO: redirect to dashboard
+        console.log(response);
+      }
+      //else handle invalid email or password
     })
   } else {
     alert("Email and Password required");
