@@ -1,51 +1,68 @@
 import React from 'react';
-import axios from 'axios';
-import Dashboard from './components/Dashboard';
-import base62 from 'base62';
+import Main from './components/Main';
+import SignIn from './components/SignIn';
 import './stylesheets/App.css';
 
-const ROOT_URL = 'http://localhost:3000/';
+const ROOT_URL = 'http://localhost:3001/';
 
 class App extends React.Component {
   constructor() {
     super();
 
-    this.createChallenge = this.createChallenge.bind(this);
+    this.loggedIn = this.loggedIn.bind(this);
+    this.login = this.login.bind(this);
+
+    var loginRequest = this.loggedIn();
 
     this.state = {
-      challengeUrl: null
+      auth : {
+        loggedIn: loginRequest.loggedIn,
+        userId: loginRequest.userId
+      }
     }
   }
 
-  createChallenge(challenge) {
-    axios.post(
-      ROOT_URL + 'challenges', {
-        category: challenge.category,
-        description: challenge.description,
-        type: challenge.type
-      }).then((response) => {
-      this.setState({ challengeUrl: ROOT_URL + 'challenge/' + base62.encode(response.data.insertId)});
-    });
+  loggedIn() {
+    var loginRequest = new XMLHttpRequest();
+    loginRequest.open("GET", ROOT_URL + 'checkauth', false);
+    loginRequest.withCredentials = true;
+    loginRequest.send();
+
+    if (loginRequest.status === 200) {
+      var jsonResponse = JSON.parse(loginRequest.response);
+      return {
+        loggedIn: true,
+        userId: jsonResponse.userId
+      }
+    } else {
+      return {
+        loggedIn: false,
+        userId: null
+      }
+    }
   }
 
+  login(userId) {
+    this.setState({
+      auth: {
+        loggedIn: true,
+        userId: userId
+      }
+    })
+  }
+
+
+
   render() {
-    if(this.state.challengeUrl != null) {
+    if (this.state.auth.loggedIn) {
       return(
-        <div id='App'>
-          <Dashboard onCreate={this.createChallenge} />
-          <input
-            className='challenge-url'
-            type='text'
-            readOnly
-            value={this.state.challengeUrl}
-          />
+        <div>
+          <Main userId={this.state.auth.userId} />
         </div>
       );
     }
-    return(
-      <div className='App'>
-        <Dashboard onCreate={this.createChallenge} />
-      </div>
+    return (
+      <SignIn login={this.login} />
     );
   }
 }

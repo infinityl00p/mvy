@@ -83,11 +83,14 @@ passport.use(new LocalStrategy({
 ));
 
 app.post('/signin', passport.authenticate('local'), function(req, res) {
-  return res.send('login success!');
+  res.status(200).json({
+    status: 'Successfully Signed In!',
+    userId: req.session.passport.user
+  });
 });
 
 function isAuthenticated (req,res,next){
-  if(req.session.passport.user){
+  if(req.session.passport){
     return next();
   }
   else
@@ -99,7 +102,8 @@ function isAuthenticated (req,res,next){
 
 app.get('/checkauth', isAuthenticated, function(req,res) {
   res.status(200).json({
-    status: 'User Authenticated!'
+    status: 'User Authenticated!',
+    userId: req.session.passport.user
   });
 })
 
