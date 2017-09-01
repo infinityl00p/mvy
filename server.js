@@ -45,9 +45,11 @@ const connection = mysql.createConnection({
   database : 'mvy_db'
 });
 
+
 passport.serializeUser(function(user, done) {
   done(null, user.id);
 });
+
 
 passport.deserializeUser(function(user, done) {
   connection.query('SELECT * FROM users WHERE id=?', user, function(err, userId) {
@@ -61,6 +63,7 @@ passport.deserializeUser(function(user, done) {
     done(err, userId[0]);
   });
 });
+
 
 passport.use(new LocalStrategy({
   usernameField: 'email',
@@ -82,12 +85,14 @@ passport.use(new LocalStrategy({
   }
 ));
 
+
 app.post('/signin', passport.authenticate('local'), function(req, res) {
   res.status(200).json({
     status: 'Successfully Signed In!',
     userId: req.session.passport.user
   });
 });
+
 
 function isAuthenticated (req,res,next){
   if(req.session.passport){
@@ -100,6 +105,7 @@ function isAuthenticated (req,res,next){
 
 }
 
+
 app.get('/checkauth', isAuthenticated, function(req,res) {
   res.status(200).json({
     status: 'User Authenticated!',
@@ -107,10 +113,12 @@ app.get('/checkauth', isAuthenticated, function(req,res) {
   });
 })
 
+
 app.get('/signout', function(req,res) {
   req.session.destroy();
   res.status(200).json({ success: 'successfully signed out' });
 })
+
 
 app.post('/users', function (req, res) {
   if(!req.body) {
@@ -218,6 +226,7 @@ app.get('/challenges/:cid/users', function(req,res) {
   })
 })
 
+
 app.get('/challenges/user/:uid', function(req,res) {
   const {uid} = req.params;
 
@@ -233,6 +242,7 @@ app.get('/challenges/user/:uid', function(req,res) {
     }
   })
 })
+
 
 app.route('/challenges/:cid/users/:uid')
   .get(function(req,res) {

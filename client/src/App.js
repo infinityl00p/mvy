@@ -48,7 +48,7 @@ class App extends React.Component {
         loggedIn: true,
         userId: userId
       }
-    })
+    });
   }
 
 
