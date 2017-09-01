@@ -1,18 +1,41 @@
 const express = require('express');
 const mysql = require('mysql');
 const app = express();
-const bodyParser = require('body-parser');
 const cors = require('cors');
-app.use(cors());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-
-app.set('port', (process.env.PORT || 3001));
+const session = require('express-session');
+const passport = require('passport');
+const morgan = require('morgan');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const LocalStrategy = require('passport-local').Strategy;
 
 // Express only serves static assets in production
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static('client/build'));
 }
+
+app.set('port', (process.env.PORT || 3001));
+
+app.use(cors({
+  credentials: true,
+  origin: 'http://localhost:3000'
+}));
+app.use(morgan('dev'));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(cookieParser());
+app.use(session({
+  secret: 'moneymoneymoneyteam',
+  resave: true,
+  saveUninitialized: false,
+  cookie: {
+    path: '/',
+    originalMaxAge: 1000 * 60 * 60 * 24
+  }
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 // Setup Database connection
 const connection = mysql.createConnection({
@@ -22,16 +45,91 @@ const connection = mysql.createConnection({
   database : 'mvy_db'
 });
 
+
+passport.serializeUser(function(user, done) {
+  done(null, user.id);
+});
+
+
+passport.deserializeUser(function(user, done) {
+  connection.query('SELECT * FROM users WHERE id=?', user, function(err, userId) {
+    if (err) {
+      res.status(400).json({
+        error: 'Database Error',
+        id: userId[0]
+      });
+    }
+
+    done(err, userId[0]);
+  });
+});
+
+
+passport.use(new LocalStrategy({
+  usernameField: 'email',
+  passwordField: 'password',
+  },
+  function(email, password, done) {
+    connection.query('SELECT * FROM users WHERE email=?', email, function(err, user) {
+      if (err) {
+        return done(err);
+      }
+      if (!user.length) {
+        return done(null, false, { message: 'Incorrect email.' });
+      }
+      if (user[0].password !== password) {
+        return done(null, false, { message: 'Incorrect password.' });
+      }
+      return done(null, user[0]);
+    });
+  }
+));
+
+
+app.post('/signin', passport.authenticate('local'), function(req, res) {
+  res.status(200).json({
+    status: 'Successfully Signed In!',
+    userId: req.session.passport.user
+  });
+});
+
+
+function isAuthenticated (req,res,next){
+  if(req.session.passport){
+    return next();
+  }
+  else
+     return res.status(401).json({
+       error: 'User not authenticated'
+     })
+
+}
+
+
+app.get('/checkauth', isAuthenticated, function(req,res) {
+  res.status(200).json({
+    status: 'User Authenticated!',
+    userId: req.session.passport.user
+  });
+})
+
+
+app.get('/signout', function(req,res) {
+  req.session.destroy();
+  res.status(200).json({ success: 'successfully signed out' });
+})
+
+
 app.post('/users', function (req, res) {
   if(!req.body) {
     return res.status(400).json({error: 'Missing user data'});
   }
 
   const {name} = req.body;
-  const {username} = req.body;
+  const {email} = req.body;
   const {password} = req.body;
 
-  connection.query('INSERT INTO users (name, username, password) VALUES (?, ?, ?)', [name, username, password], function(err, results) {
+  connection.query('INSERT INTO users (name, email, password) VALUES (?, ?, ?)', [name, email, password], function(err, results) {
     if (err) {
       return res.status(400).json({ error: 'Database error'});
     } else {
@@ -128,6 +226,24 @@ app.get('/challenges/:cid/users', function(req,res) {
   })
 })
 
+
+app.get('/challenges/user/:uid', function(req,res) {
+  const {uid} = req.params;
+
+  connection.query('SELECT * FROM user_challenges where uid=?', uid, function(err, results) {
+    if (err) {
+      return res.status(400).json({
+        error: 'Database error',
+        uid: uid
+      });
+
+    } else {
+      return res.json(results);
+    }
+  })
+})
+
+
 app.route('/challenges/:cid/users/:uid')
   .get(function(req,res) {
     const {cid} = req.params;
@@ -190,7 +306,6 @@ app.post('/challenges/:cid/users/:uid', function (req, res) {
 
 app.put('/challenges/:id', function (req, res) {
   const {id} = req.params;
-
   const {category} = req.body;
   const {description} = req.body;
   const {type} = req.body;

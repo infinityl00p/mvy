@@ -34,7 +34,7 @@ class ChallengeContainer extends React.Component {
   }
 
   componentDidMount() {
-    var challengeId = base62.decode(this.props.params.hash);
+    var challengeId = base62.decode(this.props.match.params.hash);
     let userChallenge = {};
     userChallenge.users = [];
 
