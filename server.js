@@ -218,6 +218,22 @@ app.get('/challenges/:cid/users', function(req,res) {
   })
 })
 
+app.get('/challenges/user/:uid', function(req,res) {
+  const {uid} = req.params;
+
+  connection.query('SELECT * FROM user_challenges where uid=?', uid, function(err, results) {
+    if (err) {
+      return res.status(400).json({
+        error: 'Database error',
+        uid: uid
+      });
+
+    } else {
+      return res.json(results);
+    }
+  })
+})
+
 app.route('/challenges/:cid/users/:uid')
   .get(function(req,res) {
     const {cid} = req.params;
@@ -280,7 +296,6 @@ app.post('/challenges/:cid/users/:uid', function (req, res) {
 
 app.put('/challenges/:id', function (req, res) {
   const {id} = req.params;
-
   const {category} = req.body;
   const {description} = req.body;
   const {type} = req.body;
