@@ -1,13 +1,12 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
-import axios from 'axios';
 import base62 from 'base62';
 import ChallengeModal from './ChallengeModal';
+import ChallengeList from './ChallengeList';
 import '../stylesheets/Dashboard.css';
 
+const api = require('../utils/api');
 const BROWSER_URL = 'http://localhost:3000/';
-const ROOT_URL = 'http://localhost:3001/';
-
 
 class Dashboard extends React.Component {
   constructor() {
@@ -18,19 +17,37 @@ class Dashboard extends React.Component {
 
     this.state = {
       showModal : false,
-      challengeUrl: null
+      challengeUrl: null,
+      challenges: [],
+      pendingChallenges: [],
     };
   }
 
+  componentDidMount() {
+    api.getUserChallenges(this.props.userId)
+    .then((challenges) => {
+      this.setState({
+        challenges: challenges
+      });
+    })
+  }
+
   createChallenge(challenge) {
-    axios.post(
-      ROOT_URL + 'challenges', {
+    return api.CreateChallenge(challenge)
+    .then((cid) => {
+      var newChallenge = {
+        id: cid,
         category: challenge.category,
         description: challenge.description,
         type: challenge.type
-      }).then((response) => {
-      this.setState({ challengeUrl: BROWSER_URL + 'challenge/' + base62.encode(response.data.insertId)});
-    });
+      }
+
+      var pendingChallenges = [...this.state.pendingChallenges, newChallenge];
+      this.setState({
+        challengeUrl: BROWSER_URL + 'challenge/' + base62.encode(cid),
+        pendingChallenges: pendingChallenges
+      });
+    })
   }
 
   toggleShowModal() {
@@ -51,7 +68,6 @@ class Dashboard extends React.Component {
           onCreate={this.createChallenge}
         />
         {(() => {
-          console.log(this.state.challengeUrl);
           if (this.state.challengeUrl) {
             return(
               <input
@@ -64,6 +80,7 @@ class Dashboard extends React.Component {
             }
           })()
         }
+        <ChallengeList challenges={this.state.challenges} pendingChallenges={this.state.pendingChallenges} />
       </div>
     );
   }

@@ -1,37 +1,23 @@
 import React from 'react';
-import axios from 'axios';
 import { Form, FormGroup, Col, ControlLabel, FormControl, Button } from 'react-bootstrap';
 
-const ROOT_URL = 'http://localhost:3001/';
+const api = require('../utils/api');
 
 class SignIn extends React.Component {
   constructor(props) {
     super(props);
-
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleSubmit(e) {
     e.preventDefault();
+    var email = e.target.email.value;
+    var password = e.target.password.value;
 
-    if (e.target.email.value && e.target.password.value) {
-      return axios(ROOT_URL + 'signin', {
-        method: "post",
-        data: {
-          email: e.target.email.value,
-          password: e.target.password.value
-        },
-        withCredentials: true
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          //TODO: redirect to dashboard
-          this.props.login(response.data.userId);
-        }
-        //TODO: else handle invalid email or password
+    if (email && password) {
+      api.SignIn(email, password)
+      .then((uid) => {
+        this.props.login(uid);
       })
     } else {
       alert("Email and Password required");

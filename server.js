@@ -195,6 +195,7 @@ app.get('/challenges/:cid', function (req, res) {
       });
     } else if (results.length != 0) {
       return res.json({
+        id: results[0].id,
         category: results[0].category,
         description: results[0].description,
         type: results[0].type
@@ -209,7 +210,7 @@ app.get('/challenges/:cid', function (req, res) {
 });
 
 
-app.get('/challenges/:cid/users', function(req,res) {
+app.get('/challenges/:cid/users', function(req, res) {
   const {cid} = req.params;
 
   connection.query('SELECT * FROM user_challenges where cid=?', cid, function(err, results) {
@@ -227,7 +228,7 @@ app.get('/challenges/:cid/users', function(req,res) {
 })
 
 
-app.get('/challenges/user/:uid', function(req,res) {
+app.get('/challenges/user/:uid', function(req, res) {
   const {uid} = req.params;
 
   connection.query('SELECT * FROM user_challenges where uid=?', uid, function(err, results) {
@@ -237,6 +238,21 @@ app.get('/challenges/user/:uid', function(req,res) {
         uid: uid
       });
 
+    } else {
+      return res.json(results);
+    }
+  })
+})
+
+app.get('/challenges/all/user/:uid', function(req, res) {
+  const {uid} = req.params;
+
+  connection.query('SELECT challenges.id, challenges.category, challenges.description, challenges.type FROM user_challenges, challenges WHERE challenges.id = user_challenges .cid AND user_challenges.uid = (?)', uid, function(err, results) {
+    if (err) {
+      return res.status(400).json({
+        error: 'Database error',
+        uid: uid
+      });
     } else {
       return res.json(results);
     }
