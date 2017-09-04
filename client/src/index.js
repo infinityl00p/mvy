@@ -7,9 +7,8 @@ import './index.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/css/bootstrap-theme.css';
 
-ReactDOM.render(
+ReactDOM.render((
   <BrowserRouter>
     <App />
-  </BrowserRouter>,
-  document.getElementById('root'), // eslint-disable-line no-undef
-);
+  </BrowserRouter>
+), document.getElementById('root'));

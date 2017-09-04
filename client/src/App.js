@@ -1,45 +1,42 @@
 import React from 'react';
-import Main from './components/Main';
+import Routes from './routes/Routes';
 import SignIn from './components/SignIn';
 import './stylesheets/App.css';
 
-const ROOT_URL = 'http://localhost:3001/';
+const api = require('./utils/api');
 
 class App extends React.Component {
   constructor() {
     super();
 
-    this.loggedIn = this.loggedIn.bind(this);
     this.login = this.login.bind(this);
-
-    var loginRequest = this.loggedIn();
 
     this.state = {
       auth : {
-        loggedIn: loginRequest.loggedIn,
-        userId: loginRequest.userId
-      }
-    }
-  }
-
-  loggedIn() {
-    var loginRequest = new XMLHttpRequest();
-    loginRequest.open("GET", ROOT_URL + 'checkauth', false);
-    loginRequest.withCredentials = true;
-    loginRequest.send();
-
-    if (loginRequest.status === 200) {
-      var jsonResponse = JSON.parse(loginRequest.response);
-      return {
-        loggedIn: true,
-        userId: jsonResponse.userId
-      }
-    } else {
-      return {
         loggedIn: false,
         userId: null
       }
     }
+  }
+
+  componentWillMount() {
+    api.CheckAuth()
+    .then((response) => {
+      this.setState({
+        auth: {
+          loggedIn: true,
+          userId: response.userId
+        }
+      })
+    })
+    .catch((err) => {
+      this.setState({
+        auth: {
+          loggedIn: false,
+          userId: null
+        }
+      })
+    })
   }
 
   login(userId) {
@@ -57,7 +54,7 @@ class App extends React.Component {
     if (this.state.auth.loggedIn) {
       return(
         <div>
-          <Main userId={this.state.auth.userId} />
+          <Routes userId={this.state.auth.userId} />
         </div>
       );
     }
