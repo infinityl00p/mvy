@@ -1,10 +1,12 @@
 import React from 'react';
 import { Modal, Form, FormGroup, Col, ControlLabel, FormControl, Button } from 'react-bootstrap';
 
+
 class ChallengeModal extends React.Component {
   constructor(props) {
     super(props);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.renderOpponentList = this.renderOpponentList.bind(this);
   }
 
   handleSubmit(e) {
@@ -13,12 +15,14 @@ class ChallengeModal extends React.Component {
     var category = e.target[0].value;
     var description = e.target[1].value;
     var type = e.target[2].value;
+    var opponent = e.target[3].value;
 
     if (category && description && type) {
       var challenge = {
         category: category,
         description: description,
-        type: type
+        type: type,
+        opponent: opponent
       }
 
       //TODO: Error handle if any of the challenge parameters are left empty
@@ -27,6 +31,18 @@ class ChallengeModal extends React.Component {
     } else {
       alert("Warning: Please fill all required fields");
     }
+  }
+
+  renderOpponentList() {
+    if (this.props.opponents) {
+      const userArray = this.props.opponents.map((user) => {
+        return(<option key={user.id} value={user.id}>{user.name}</option>)
+      })
+
+    return userArray;
+    }
+
+    return;
   }
 
   render() {
@@ -61,6 +77,16 @@ class ChallengeModal extends React.Component {
               <Col sm={10}>
                 <FormControl componentClass="select" placeholder="select">
                   <option>First to 30 days</option>
+                </FormControl>
+              </Col>
+            </FormGroup>
+            <FormGroup controlId="formType">
+              <Col componentClass={ControlLabel} sm={2}>
+                Opponent
+              </Col>
+              <Col sm={10}>
+                <FormControl componentClass="select" placeholder="select">
+                  {this.renderOpponentList()}
                 </FormControl>
               </Col>
             </FormGroup>

@@ -16,10 +16,9 @@ class ChallengePage extends React.Component {
         <div className='container matchup'>
           <div className='col-md-5'>
             <GameContainer
-              userId={this.props.challengeData.users[0].id}
-              name={this.props.challengeData.users[0].name}
-              tally={this.props.challengeData.users[0].tally}
+              challengeData={this.props.challengeData.users[0]}
               onUpdateTally={this.props.onUpdateTally}
+              currentUserId={this.props.currentUserId}
             />
           </div>
           <div className='col-md-2'>
@@ -29,10 +28,9 @@ class ChallengePage extends React.Component {
           </div>
           <div className='col-md-5'>
             <GameContainer
-              userId={this.props.challengeData.users[1].id}
-              name={this.props.challengeData.users[1].name}
-              tally={this.props.challengeData.users[1].tally}
+              challengeData={this.props.challengeData.users[1]}
               onUpdateTally={this.props.onUpdateTally}
+              currentUserId={this.props.currentUserId}
             />
           </div>
         </div>

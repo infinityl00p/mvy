@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, FormGroup, Col, ControlLabel, FormControl, Button } from 'react-bootstrap';
+import { Form, FormGroup, Col, ControlLabel, FormControl, Button, ButtonToolbar } from 'react-bootstrap';
 
 const api = require('../utils/api');
 
@@ -17,7 +17,8 @@ class SignIn extends React.Component {
     if (email && password) {
       api.SignIn(email, password)
       .then((uid) => {
-        this.props.login(uid);
+        this.props.signin(uid);
+        this.props.setUserData(uid);
       })
     } else {
       alert("Email and Password required");
@@ -46,12 +47,14 @@ class SignIn extends React.Component {
           </FormGroup>
           <FormGroup>
             <Col smOffset={5} sm={10}>
-              <Button type="reset">
-                Clear
-              </Button>
-              <Button type="submit">
-                Submit
-              </Button>
+              <ButtonToolbar>
+                <Button type="reset">
+                  Clear
+                </Button>
+                <Button type="submit">
+                  Sign in
+                </Button>
+              </ButtonToolbar>
             </Col>
           </FormGroup>
         </Form>

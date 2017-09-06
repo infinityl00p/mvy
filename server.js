@@ -26,11 +26,11 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(session({
   secret: 'moneymoneymoneyteam',
-  resave: true,
+  resave: false,
   saveUninitialized: false,
   cookie: {
     path: '/',
-    originalMaxAge: 1000 * 60 * 60 * 24
+    expires: 1000 * 60 * 60 * 24
   }
 }));
 app.use(passport.initialize());
@@ -97,12 +97,11 @@ app.post('/signin', passport.authenticate('local'), function(req, res) {
 function isAuthenticated (req,res,next){
   if(req.session.passport){
     return next();
-  }
-  else
+  } else {
      return res.status(401).json({
        error: 'User not authenticated'
      })
-
+  }
 }
 
 
@@ -114,13 +113,18 @@ app.get('/checkauth', isAuthenticated, function(req,res) {
 })
 
 
-app.get('/signout', function(req,res) {
-  req.session.destroy();
-  res.status(200).json({ success: 'successfully signed out' });
+app.get('/signout', function(req, res) {
+  req.session.destroy((err) => {
+    if(err) {
+      return next(err)
+    }
+    req.logOut();
+    res.sendStatus(200);
+  })
 })
 
 
-app.post('/users', function (req, res) {
+app.post('/users', function(req, res) {
   if(!req.body) {
     return res.status(400).json({error: 'Missing user data'});
   }
@@ -139,7 +143,20 @@ app.post('/users', function (req, res) {
 });
 
 
-app.get('/users/:uid', function (req,res) {
+app.get('/opponents/:uid', function(req, res) {
+  const {uid} = req.params;
+
+  connection.query('SELECT id, name from users where id != ?', uid, function(err, results) {
+    if (err) {
+      return res.status(400).json({ error: 'Database error'});
+    } else {
+      return res.status(200).json(results);
+    }
+  });
+})
+
+
+app.get('/users/:uid', function (req, res) {
   const {uid} = req.params;
 
   connection.query('SELECT name from users where id=?', uid, function(err, results) {
@@ -173,12 +190,26 @@ app.route('/challenges')
     const {category} = req.body;
     const {description} = req.body;
     const {type} = req.body;
+    const {owner} = req.body;
+    const {opponent} = req.body;
 
     connection.query('INSERT INTO challenges (category, description, type) VALUES (?, ?, ?)', [category, description, type], function(err, results) {
       if (err) {
-        return res.status(400).json({ error: 'Database error'});
+        return res.status(400).json({
+          error: 'Database error',
+          description: 'Posting to challenge table'
+        });
       } else {
-        return res.status(200).json(results);
+        connection.query('INSERT INTO pending_challenges (cid, ownerid, opponentid) VALUES (?, ?, ?)', [results.insertId, owner, opponent], function(err, pending) {
+          if (err) {
+            return res.status(400).json({
+              error: 'Database error',
+              description: 'Posting to pending_challenges table'
+            });
+          } else {
+            res.json(pending)
+          }
+        });
       }
     });
   });
@@ -244,6 +275,7 @@ app.get('/challenges/user/:uid', function(req, res) {
   })
 })
 
+
 app.get('/challenges/all/user/:uid', function(req, res) {
   const {uid} = req.params;
 
@@ -255,6 +287,71 @@ app.get('/challenges/all/user/:uid', function(req, res) {
       });
     } else {
       return res.json(results);
+    }
+  })
+})
+
+
+app.get('/challenges/pending/:uid', function(req, res) {
+  const {uid} = req.params;
+
+  connection.query('SELECT challenges.id, challenges.category, challenges.description, challenges.type, pending_challenges.opponentid, pending_challenges.ownerid FROM pending_challenges, challenges WHERE challenges.id = pending_challenges.cid AND (pending_challenges.ownerid = (?) OR pending_challenges.opponentid = (?))', [uid, uid], function(err, results) {
+    if (err) {
+      return res.status(400).json({
+        error: 'Database error',
+        uid: uid
+      });
+    } else {
+      return res.json(results);
+    }
+  })
+})
+
+
+app.route('/challenges/pending/:cid')
+  .post(function(req, res, next) {
+    const {cid} = req.params;
+    const {owner} = req.body;
+    const {opponent} = req.body
+    //TODO: ONLY SEND HEADER ONCE... FIX THIS
+
+    connection.query('DELETE FROM pending_challenges WHERE cid =(?)', [cid], function(err, results) {
+      if (err) {
+        res.statusCode = 400;
+      }
+    })
+
+    connection.query('INSERT INTO user_challenges (cid, uid) VALUES (?,?)', [cid, owner], function(err, results) {
+      if (err) {
+        res.statusCode = 400;
+      }
+    });
+
+    //TODO: Primary key should be unique
+    connection.query('INSERT INTO user_challenges (cid, uid) VALUES (?,?)', [cid, opponent], function(err, results) {
+      if (err) {
+        res.sendStatus(400);
+      } else {
+        res.sendStatus(200);
+      }
+    });
+  })
+
+  .delete(function(req, res) {
+  const {cid} = req.params;
+    //TODO: ONLY SEND HEADER ONCE... FIX THIS
+
+  connection.query('DELETE FROM pending_challenges WHERE cid =(?)', [cid], function(err, results) {
+    if (err) {
+      res.statusCode = 400;
+    } else {
+      connection.query('DELETE FROM challenges WHERE id =(?)', [cid], function(err, results) {
+        if (err) {
+          res.sendStatus(400);
+        } else {
+          res.sendStatus(200);
+        }
+      });
     }
   })
 })
