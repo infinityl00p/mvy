@@ -9,7 +9,7 @@ class GameContainer extends React.Component {
   }
   //TODO: handle button click here
   handleClick() {
-    this.props.onUpdateTally(this.props.userId);
+    this.props.onUpdateTally(this.props.challengeData.id);
   }
 
   render() {
@@ -18,6 +18,7 @@ class GameContainer extends React.Component {
         <PlayerScreen
           data={this.props}
           onClick={this.handleClick}
+          currentUserId={this.props.currentUserId}
         />
       </div>
     )

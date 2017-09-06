@@ -13,7 +13,7 @@ module.exports = {
         loggedIn: true,
         userId: response.data.userId
       }
-    });
+    })
   },
 
   CheckIn: function(cid, uid, today) {
@@ -66,7 +66,9 @@ module.exports = {
       ROOT_URL + 'challenges', {
         category: challenge.category,
         description: challenge.description,
-        type: challenge.type
+        type: challenge.type,
+        owner: challenge.owner,
+        opponent: challenge.opponent
       })
       .then((response) => {
         return response.data.insertId;
@@ -93,8 +95,50 @@ module.exports = {
     })
   },
 
+  SignOut: function() {
+    return axios(ROOT_URL + 'signout', {
+      method: 'get',
+      withCredentials: true
+    })
+  },
+
   getUserChallenges: function(userId) {
     return axios.get(ROOT_URL + 'challenges/all/user/' + userId)
+    .then((response) => {
+      return response.data;
+    })
+  },
+
+  getPendingChallenges: function(userId) {
+    return axios.get(ROOT_URL + 'challenges/pending/' + userId)
+    .then((response) => {
+      //TODO.... why do i need to return?
+      return response.data;
+    })
+  },
+
+  getOpponents: function(userId) {
+    return axios.get(ROOT_URL + 'opponents/' + userId)
+    .then((response) => {
+      return response.data;
+    })
+  },
+
+  acceptPendingChallenge: function(cid, owner, opponent) {
+    return axios.post(ROOT_URL + 'challenges/pending/' + cid, {
+      owner: owner,
+      opponent: opponent
+    })
+    .then((response) => {
+      return response.data;
+    })
+  },
+
+  declinePendingChallenge: function(cid, owner, opponent) {
+    return axios.delete(ROOT_URL + 'challenges/pending/' + cid, {
+      owner: owner,
+      opponent: opponent
+    })
     .then((response) => {
       return response.data;
     })

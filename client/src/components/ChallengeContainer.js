@@ -10,7 +10,7 @@ class ChallengeContainer extends React.Component {
 
     this.updateUserTally = this.updateUserTally.bind(this);
     this.getTodaysDate = this.getTodaysDate.bind(this);
-
+    //don't need challenge in state, it's not going to be updated
     this.state = {
       challenge: {
         id: null,
@@ -45,7 +45,6 @@ class ChallengeContainer extends React.Component {
 
   updateUserTally(userId) {
     var today = this.getTodaysDate();
-
     var lastDate = new Date(this.state.users[userId-1].lastDate);
 
     if (today.getTime() !== lastDate.getTime()) {
@@ -76,6 +75,7 @@ class ChallengeContainer extends React.Component {
         <ChallengePage
           challengeData={this.state}
           onUpdateTally={this.updateUserTally}
+          currentUserId={this.props.userId}
         />
       </div>
     )
