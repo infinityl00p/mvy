@@ -18,7 +18,7 @@ app.set('port', (process.env.PORT || 3001));
 
 app.use(cors({
   credentials: true,
-  origin: 'http://localhost:3000'
+  origin: 'https://glacial-garden-63926.herokuapp.com/'
 }));
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
