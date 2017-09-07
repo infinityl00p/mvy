@@ -39,10 +39,10 @@ app.use(passport.session());
 
 // Setup Database connection
 const connection = mysql.createConnection({
-  host : 'localhost',
-  user : 'root',
-  password : '',
-  database : 'mvy_db'
+  host : 'sql3.freemysqlhosting.net',
+  user : 'sql3193384',
+  password : 'qCqvuuYYng',
+  database : 'sql3193384'
 });
 
 
