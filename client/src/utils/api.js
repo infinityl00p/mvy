@@ -1,6 +1,6 @@
 var axios = require('axios');
 
-const ROOT_URL = 'http://localhost:3001/';
+const ROOT_URL = 'https://mevsu.herokuapp.com/';
 
 module.exports = {
   CheckAuth: function() {
