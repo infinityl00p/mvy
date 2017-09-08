@@ -60,9 +60,9 @@ class ChallengeList extends React.Component {
   renderButtons(cid, index) {
     if (this.props.userData.userId === this.props.userData.pendingChallenges[index].opponentid) {
       return (
-        <span>
-          <Button type='button' className='pending-button' onClick={() => this.acceptChallenge(cid, index)} bsSize='small'>Accept</Button>
-          <Button type='button' className='pending-button' onClick={() => this.declineChallenge(cid, index)} bsSize='small'>Decline</Button>
+        <span className='pending-button'>
+          <Button type='button' onClick={() => this.acceptChallenge(cid, index)} bsSize='small'>Accept</Button>
+          <Button type='button' onClick={() => this.declineChallenge(cid, index)} bsSize='small'>Decline</Button>
         </span>
       );
     }
@@ -71,14 +71,14 @@ class ChallengeList extends React.Component {
   acceptChallenge(cid, index) {
     return api.acceptPendingChallenge(cid, this.props.userData.pendingChallenges[index].ownerid, this.props.userData.pendingChallenges[index].opponentid)
     .then((response) => {
-      this.props.updatePendingChallenges(index);
+      this.props.updatePendingChallenges(index , 'add');
     })
   }
 
   declineChallenge(cid, index) {
     return api.declinePendingChallenge(cid, this.props.userData.pendingChallenges[index].ownerid, this.props.userData.pendingChallenges[index].opponentid)
     .then((response) => {
-      this.props.updatePendingChallenges(index);
+      this.props.updatePendingChallenges(index, 'remove');
     })
   }
 
