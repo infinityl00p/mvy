@@ -24,12 +24,6 @@ class Dashboard extends React.Component {
   render() {
     return(
       <div className="challenge-dashboard">
-        <Button onClick={this.props.signout}>
-          Sign Out
-        </Button>
-        <Button onClick={this.toggleShowModal}>
-          Create a Challenge
-        </Button>
         <ChallengeModal
           showModal={this.state.showModal}
           toggleShowModal={this.toggleShowModal}
@@ -40,6 +34,9 @@ class Dashboard extends React.Component {
           updatePendingChallenges={this.props.onUpdate}
           userData={this.props.userData}
         />
+        <Button className='challenge-button' onClick={this.toggleShowModal}>
+          Create a Challenge
+        </Button>
       </div>
     );
   }

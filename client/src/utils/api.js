@@ -1,6 +1,6 @@
 var axios = require('axios');
 
-const ROOT_URL = 'https://glacial-garden-63926.herokuapp.com/';
+const ROOT_URL = 'http://localhost:3001/';
 
 module.exports = {
   CheckAuth: function() {
@@ -19,6 +19,9 @@ module.exports = {
   CheckIn: function(cid, uid, today) {
     return axios.post('/challenges/' + cid + '/users/' + uid, {
       today: today
+    })
+    .then((response) => {
+      return response.data;
     })
   },
 
@@ -112,7 +115,6 @@ module.exports = {
   getPendingChallenges: function(userId) {
     return axios.get(ROOT_URL + 'challenges/pending/' + userId)
     .then((response) => {
-      //TODO.... why do i need to return?
       return response.data;
     })
   },

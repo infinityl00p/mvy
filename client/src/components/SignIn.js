@@ -1,5 +1,6 @@
 import React from 'react';
-import { Form, FormGroup, Col, ControlLabel, FormControl, Button, ButtonToolbar } from 'react-bootstrap';
+import { Form, FormGroup, ControlLabel, FormControl, Button } from 'react-bootstrap';
+import '../stylesheets/SignIn.css'
 
 const api = require('../utils/api');
 
@@ -27,35 +28,37 @@ class SignIn extends React.Component {
 
   render() {
     return(
-      <div className='col-md-12'>
-        <Form horizontal onSubmit={this.handleSubmit}>
-          <FormGroup controlId="email">
-            <Col componentClass={ControlLabel} sm={2}>
+      <div className='container signin'>
+        <Form onSubmit={this.handleSubmit} className='col-md-4 col-md-offset-4 form'>
+          <h1 className='title'>Sign In</h1>
+          <FormGroup controlId='email'>
+            <ControlLabel>
+              <span className='glyphicon glyphicon-user' />
               Email
-            </Col>
-            <Col sm={5}>
-              <FormControl type="email" placeholder="name@example.com" />
-            </Col>
-          </FormGroup>
-          <FormGroup controlId="password">
-            <Col componentClass={ControlLabel} sm={2}>
+            </ControlLabel>
+            <FormControl
+              type='email'
+              placeholder='email'
+              autoFocus
+              />
+            </FormGroup>
+          <FormGroup controlId='password'>
+            <ControlLabel>
+              <span className='glyphicon glyphicon-lock' />
               Password
-            </Col>
-            <Col sm={5}>
-              <FormControl type="password" placeholder="*******" />
-            </Col>
+            </ControlLabel>
+            <FormControl
+              type='password'
+              placeholder='*******'
+              />
           </FormGroup>
           <FormGroup>
-            <Col smOffset={5} sm={10}>
-              <ButtonToolbar>
-                <Button type="reset">
-                  Clear
-                </Button>
-                <Button type="submit">
-                  Sign in
-                </Button>
-              </ButtonToolbar>
-            </Col>
+          <Button
+            block
+            type='submit'
+          >
+            Sign in
+          </Button>
           </FormGroup>
         </Form>
       </div>

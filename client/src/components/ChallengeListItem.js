@@ -14,9 +14,9 @@ class ChallengeListItem extends React.Component {
 
   render() {
     return(
-      <div>
+      <span>
         <Link to={this.getUrlPath()}>{this.props.challenge.description}</Link>
-      </div>
+      </span>
     )
   }
 }

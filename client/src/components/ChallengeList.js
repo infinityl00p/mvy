@@ -21,7 +21,11 @@ class ChallengeList extends React.Component {
     if(challenges && challenges.length) {
       return this.props.userData.challenges.map((challenge, index) => {
         return (
-          <li key={index}><ChallengeListItem key={challenge.id} challenge={challenge} /></li>
+          <span key={index}>
+            <li key={index}>
+              <ChallengeListItem key={challenge.id} challenge={challenge} />
+            </li>
+          </span>
         )
       })
     } else {
@@ -79,11 +83,11 @@ class ChallengeList extends React.Component {
     return(
       <div>
         <ol>
-          <strong>Challenges</strong>
+          <h1>Challenges</h1>
           {this.renderChallenges()}
         </ol>
         <ol>
-          <strong>Pending Challenges</strong>
+          <h1>Pending Challenges</h1>
           {this.renderPendingChallenges()}
         </ol>
       </div>

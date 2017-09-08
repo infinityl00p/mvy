@@ -1,0 +1,24 @@
+.action-bar {
+  height: 35px;
+  background-color: #fafafa;
+  border-bottom: 1px solid #ebebeb;
+  margin-bottom: 40px;
+  padding-top: 10px;
+  text-align: right;
+  font-size: 15px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.action-bar .action {
+  margin-left: 30px;
+  margin-right: 20px;
+}
+
+.action-bar .link {
+  color: #333;
+}
+
+.action-bar .action:hover, .link:hover {
+  border-bottom: 3px solid black;
+  cursor: pointer
+}

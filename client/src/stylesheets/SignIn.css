@@ -1,0 +1,14 @@
+.signin {
+  height: 100vh;
+  top: 50%;
+}
+
+.signin .title {
+  margin-bottom: 30px;
+}
+
+.signin .form {
+  padding: 30px;
+  border: 1px solid #ebebeb;
+  top: 25%;
+}
