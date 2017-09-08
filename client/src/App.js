@@ -102,10 +102,14 @@ class App extends React.Component {
     })
   }
 
-  updateChallenges(index) {
+  updateChallenges(index, action) {
     var pendingChallenges = this.state.userData.pendingChallenges;
     var challenges = this.state.userData.challenges;
-    challenges.push(pendingChallenges.splice(index, 1)[0]);
+    if (action === 'add') {
+      challenges.push(pendingChallenges.splice(index, 1)[0]);
+    } else if (action === 'remove') {
+      pendingChallenges = pendingChallenges.splice(index, 1)[0];
+    }
 
     this.setState({
       userData: {
