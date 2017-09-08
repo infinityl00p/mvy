@@ -1,6 +1,7 @@
 import React from 'react';
 import Routes from './routes/Routes';
 import SignIn from './components/SignIn';
+import ActionBar from './components/ActionBar';
 import './stylesheets/App.css';
 
 const api = require('./utils/api');
@@ -22,6 +23,7 @@ class App extends React.Component {
       },
       userData: {
         userId: null,
+        name: null,
         challenges: [],
         pendingChallenges: [],
         opponents: []
@@ -79,6 +81,11 @@ class App extends React.Component {
       userData.pendingChallenges = pendingChallenges;
     })
 
+    api.getUserName(userId)
+    .then((name) => {
+      userData.name = name;
+    })
+
     api.getOpponents(userId)
     .then((opponents) => {
       userData.opponents = opponents;
@@ -102,8 +109,11 @@ class App extends React.Component {
 
     this.setState({
       userData: {
+        name: this.state.userData.name,
+        userId: this.state.userData.userId,
         pendingChallenges: pendingChallenges,
-        challenges: challenges
+        challenges: challenges,
+        opponents: this.state.userData.opponents
       }
     });
   }
@@ -126,9 +136,9 @@ class App extends React.Component {
       this.setState({
         userData: {
           pendingChallenges: pendingChallenges,
-          challenges: this.state.challenges,
-          opponents: this.state.opponents,
-          userId: this.state.userId
+          challenges: this.state.userData.challenges,
+          opponents: this.state.userData.opponents,
+          userId: this.state.userData.userId
         }
       });
     })
@@ -156,17 +166,23 @@ class App extends React.Component {
     if (this.state.auth.loggedIn && this.state.isLoading === false) {
       return(
         <div>
+          <ActionBar
+            signout={this.signout}
+            name={this.state.userData.name}
+          />
           <Routes
             userData={this.state.userData}
             updatePendingChallenges={this.updateChallenges}
             createChallenge={this.createChallenge}
-            signout={this.signout}
           />
         </div>
       );
     }
       return(
-        <SignIn signin={this.signin} setUserData={this.setUserData} />
+        <SignIn
+          signin={this.signin}
+          setUserData={this.setUserData}
+        />
       );
     }
 }

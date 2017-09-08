@@ -23,13 +23,18 @@ class Dashboard extends React.Component {
 
   render() {
     return(
-      <div className="challenge-dashboard">
-        <Button onClick={this.props.signout}>
-          Sign Out
-        </Button>
-        <Button onClick={this.toggleShowModal}>
-          Create a Challenge
-        </Button>
+      <div className='challenge-dashboard container'>
+        <div className='row col-md-offset-4 col-md-4'>
+          <div>
+            <h2 className='title'>Instructions:</h2><p className='text'>Create a challenge which you will complete <u>once per day</u> against
+            a friend of your choosing. Once your friend has accepted the challenge it will move from Pending Challenges to
+            Challenges. View your challenge(s), and check in once per day. The first to 30 total check-ins
+            wins!</p>
+            <Button className='challenge-button' onClick={this.toggleShowModal} bsSize='large'>
+              Create a Challenge
+            </Button>
+          </div>
+        </div>
         <ChallengeModal
           showModal={this.state.showModal}
           toggleShowModal={this.toggleShowModal}

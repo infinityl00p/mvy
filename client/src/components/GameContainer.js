@@ -19,6 +19,7 @@ class GameContainer extends React.Component {
           data={this.props}
           onClick={this.handleClick}
           currentUserId={this.props.currentUserId}
+          side={this.props.side}
         />
       </div>
     )
