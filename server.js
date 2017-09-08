@@ -166,7 +166,7 @@ app.get('/users/:uid', function (req, res) {
         id: uid
       });
     } else {
-      res.json(results);
+      res.json(results[0]);
     }
   })
 })

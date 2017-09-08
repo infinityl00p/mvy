@@ -23,6 +23,7 @@ class App extends React.Component {
       },
       userData: {
         userId: null,
+        name: null,
         challenges: [],
         pendingChallenges: [],
         opponents: []
@@ -80,6 +81,11 @@ class App extends React.Component {
       userData.pendingChallenges = pendingChallenges;
     })
 
+    api.getUserName(userId)
+    .then((name) => {
+      userData.name = name;
+    })
+
     api.getOpponents(userId)
     .then((opponents) => {
       userData.opponents = opponents;
@@ -103,8 +109,11 @@ class App extends React.Component {
 
     this.setState({
       userData: {
+        name: this.state.userData.name,
+        userId: this.state.userData.userId,
         pendingChallenges: pendingChallenges,
-        challenges: challenges
+        challenges: challenges,
+        opponents: this.state.userData.opponents
       }
     });
   }
@@ -159,6 +168,7 @@ class App extends React.Component {
         <div>
           <ActionBar
             signout={this.signout}
+            name={this.state.userData.name}
           />
           <Routes
             userData={this.state.userData}

@@ -1,6 +1,7 @@
 import React from 'react';
-import { ButtonToolbar, Button } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import ChallengeListItem from './ChallengeListItem';
+import '../stylesheets/ChallengeList.css';
 
 const api = require('../utils/api');
 
@@ -22,7 +23,7 @@ class ChallengeList extends React.Component {
       return this.props.userData.challenges.map((challenge, index) => {
         return (
           <span key={index}>
-            <li key={index}>
+            <li key={index} className='text'>
               <ChallengeListItem key={challenge.id} challenge={challenge} />
             </li>
           </span>
@@ -30,7 +31,7 @@ class ChallengeList extends React.Component {
       })
     } else {
       return (
-        <p>No Challenges</p>
+        <p className='text'>No Challenges</p>
       );
     }
   }
@@ -41,15 +42,17 @@ class ChallengeList extends React.Component {
     if(pendingChallenges && pendingChallenges.length) {
       return this.props.userData.pendingChallenges.map((challenge, index) => {
         return (
-          <li key={index}>
-            {challenge.description}
-            {this.renderButtons(challenge.id, index)}
-          </li>
+          <span key={index}>
+            <li key={index} className='text'>
+              {challenge.description}
+              {this.renderButtons(challenge.id, index)}
+            </li>
+          </span>
         );
       });
     } else {
       return (
-        <p>No pending Challenges</p>
+        <p className='text'>No pending Challenges</p>
       );
     }
   }
@@ -57,10 +60,10 @@ class ChallengeList extends React.Component {
   renderButtons(cid, index) {
     if (this.props.userData.userId === this.props.userData.pendingChallenges[index].opponentid) {
       return (
-        <ButtonToolbar>
-          <Button type='button' onClick={() => this.acceptChallenge(cid, index)}>Accept</Button>
-          <Button type='button' onClick={() => this.declineChallenge(cid, index)}>Decline</Button>
-        </ButtonToolbar>
+        <span>
+          <Button type='button' className='pending-button' onClick={() => this.acceptChallenge(cid, index)} bsSize='small'>Accept</Button>
+          <Button type='button' className='pending-button' onClick={() => this.declineChallenge(cid, index)} bsSize='small'>Decline</Button>
+        </span>
       );
     }
   }
@@ -81,13 +84,13 @@ class ChallengeList extends React.Component {
 
   render() {
     return(
-      <div>
-        <ol>
-          <h1>Challenges</h1>
+      <div className='col-md-12 row'>
+        <ol className='col-md-4'>
+          <h1 className='title'>Open Challenges</h1>
           {this.renderChallenges()}
         </ol>
-        <ol>
-          <h1>Pending Challenges</h1>
+        <ol className='col-md-4 col-md-offset-4'>
+          <h1 className='title'>Pending Challenges</h1>
           {this.renderPendingChallenges()}
         </ol>
       </div>

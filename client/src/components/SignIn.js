@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, FormGroup, ControlLabel, FormControl, Button } from 'react-bootstrap';
+import { Form, FormGroup, ControlLabel, FormControl, Button, Checkbox } from 'react-bootstrap';
 import '../stylesheets/SignIn.css'
 
 const api = require('../utils/api');
@@ -8,6 +8,13 @@ class SignIn extends React.Component {
   constructor(props) {
     super(props);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.updatePassword = this.updatePassword.bind(this);
+    this.toggleShowPassword = this.toggleShowPassword.bind(this);
+
+    this.state = {
+      password: '',
+      showPassword: 'password'
+    }
   }
 
   handleSubmit(e) {
@@ -23,6 +30,24 @@ class SignIn extends React.Component {
       })
     } else {
       alert("Email and Password required");
+    }
+  }
+
+  updatePassword(e) {
+    this.setState({
+      password: e.target.value
+    })
+  }
+
+  toggleShowPassword() {
+    if(this.state.showPassword === 'password') {
+      this.setState({
+        showPassword: 'input'
+      })
+    } else {
+      this.setState({
+        showPassword: 'password'
+      })
     }
   }
 
@@ -48,10 +73,15 @@ class SignIn extends React.Component {
               Password
             </ControlLabel>
             <FormControl
-              type='password'
+              type={this.state.showPassword}
               placeholder='*******'
+              value={this.state.password}
+              onChange={this.updatePassword}
               />
           </FormGroup>
+          <Checkbox onChange={this.toggleShowPassword}>
+            Show Password
+          </Checkbox>
           <FormGroup>
           <Button
             block

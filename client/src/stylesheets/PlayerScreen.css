@@ -2,6 +2,14 @@
   text-align: center;
 }
 
+.left {
+  color: red;
+}
+
+.right {
+  color: blue;
+}
+
 .points-title {
   margin-bottom: 50px;
   text-decoration: underline;
@@ -9,9 +17,13 @@
 
 .points {
   font-size: 150px;
+  text-align: center;
+}
+
+.button:hover {
+  cursor: pointer;
 }
 
 .name {
   font-size: 60px;
-  margin-top: 50px;
 }

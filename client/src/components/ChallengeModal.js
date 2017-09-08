@@ -59,7 +59,7 @@ class ChallengeModal extends React.Component {
                 Category
               </Col>
               <Col sm={10}>
-                <FormControl type="text" placeholder="Eg. Exercise, Education, Diet, Discipline" />
+                <FormControl type="text" placeholder="Eg. Wellness" />
               </Col>
             </FormGroup>
             <FormGroup controlId="formDescription">
@@ -67,7 +67,7 @@ class ChallengeModal extends React.Component {
                 Description
               </Col>
               <Col sm={10}>
-                <FormControl type="text" placeholder="Describe the challenge in one line" />
+                <FormControl type="text" placeholder="Eg. Meditate for 20 minutes" />
               </Col>
             </FormGroup>
             <FormGroup controlId="formType">

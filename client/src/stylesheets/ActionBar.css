@@ -9,6 +9,11 @@
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
+.action-bar .welcome-message {
+  margin-left: 20px;
+  float:left;
+}
+
 .action-bar .action {
   margin-left: 30px;
   margin-right: 20px;

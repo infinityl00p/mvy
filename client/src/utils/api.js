@@ -44,11 +44,11 @@ module.exports = {
 
         return axios.get(ROOT_URL + 'users/' + userChallenge.users[0].id);
     }).then((response) => {
-      userChallenge.users[0].name = response.data[0].name;
+      userChallenge.users[0].name = response.data.name;
 
       return axios.get(ROOT_URL + 'users/' + userChallenge.users[1].id);
     }).then((response) => {
-      userChallenge.users[1].name = response.data[0].name;
+      userChallenge.users[1].name = response.data.name;
 
       return axios.get(ROOT_URL + 'challenges/' + userChallenge.challenge.id + '/users/' + userChallenge.users[0].id);
     }).then((response) => {
@@ -116,6 +116,13 @@ module.exports = {
     return axios.get(ROOT_URL + 'challenges/pending/' + userId)
     .then((response) => {
       return response.data;
+    })
+  },
+
+  getUserName: function(userId) {
+    return axios.get(ROOT_URL + 'users/' + userId)
+    .then((response) => {
+      return response.data.name;
     })
   },
 

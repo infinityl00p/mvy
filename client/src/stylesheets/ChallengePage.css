@@ -1,18 +1,21 @@
 .challenge-header {
   text-align: center;
-  margin-bottom: 20px;
+  margin-top: -50px;
 }
 
 .challenge-header .title {
   font-family: Helvetica;
   font-weight: bold;
   font-size: 70px;
-  margin-bottom: 0px;
 }
 
 .challenge-header .description, .challenge-header .type {
   font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
   margin-top: 5px;
+}
+
+.challenge-header .instructions {
+  margin-top: 0px;
 }
 
 .matchup {
