@@ -16,6 +16,7 @@ class ChallengeContainer extends React.Component {
         id: null,
         category: null,
         description: null,
+        stakes: null,
         type: null
       },
       users: [{

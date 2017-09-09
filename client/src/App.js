@@ -117,7 +117,8 @@ class App extends React.Component {
         userId: this.state.userData.userId,
         pendingChallenges: pendingChallenges,
         challenges: challenges,
-        opponents: this.state.userData.opponents
+        opponents: this.state.userData.opponents,
+        stakes: this.state.userData.stakes
       }
     });
   }
@@ -132,7 +133,8 @@ class App extends React.Component {
         category: challenge.category,
         description: challenge.description,
         type: challenge.type,
-        opponentid: challenge.opponent
+        opponentid: challenge.opponent,
+        stakes: this.state.userData.stakes
       }
 
       var pendingChallenges = [...this.state.userData.pendingChallenges, newChallenge];
@@ -142,7 +144,8 @@ class App extends React.Component {
           pendingChallenges: pendingChallenges,
           challenges: this.state.userData.challenges,
           opponents: this.state.userData.opponents,
-          userId: this.state.userData.userId
+          userId: this.state.userData.userId,
+          stakes: this.state.userData.stakes
         }
       });
     })

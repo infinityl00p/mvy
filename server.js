@@ -190,10 +190,11 @@ app.route('/challenges')
     const {category} = req.body;
     const {description} = req.body;
     const {type} = req.body;
+    const {stakes} = req.body;
     const {owner} = req.body;
     const {opponent} = req.body;
 
-    connection.query('INSERT INTO challenges (category, description, type) VALUES (?, ?, ?)', [category, description, type], function(err, results) {
+    connection.query('INSERT INTO challenges (category, description, type, stakes) VALUES (?, ?, ?, ?)', [category, description, type, stakes], function(err, results) {
       if (err) {
         return res.status(400).json({
           error: 'Database error',
@@ -229,7 +230,8 @@ app.get('/challenges/:cid', function (req, res) {
         id: results[0].id,
         category: results[0].category,
         description: results[0].description,
-        type: results[0].type
+        type: results[0].type,
+        stakes: results[0].stakes
       });
     } else {
       return res.status(400).json({
@@ -279,7 +281,7 @@ app.get('/challenges/user/:uid', function(req, res) {
 app.get('/challenges/all/user/:uid', function(req, res) {
   const {uid} = req.params;
 
-  connection.query('SELECT challenges.id, challenges.category, challenges.description, challenges.type FROM user_challenges, challenges WHERE challenges.id = user_challenges .cid AND user_challenges.uid = (?)', uid, function(err, results) {
+  connection.query('SELECT challenges.id, challenges.category, challenges.description, challenges.type, challenges.stakes FROM user_challenges, challenges WHERE challenges.id = user_challenges .cid AND user_challenges.uid = (?)', uid, function(err, results) {
     if (err) {
       return res.status(400).json({
         error: 'Database error',
@@ -295,7 +297,7 @@ app.get('/challenges/all/user/:uid', function(req, res) {
 app.get('/challenges/pending/:uid', function(req, res) {
   const {uid} = req.params;
 
-  connection.query('SELECT challenges.id, challenges.category, challenges.description, challenges.type, pending_challenges.opponentid, pending_challenges.ownerid FROM pending_challenges, challenges WHERE challenges.id = pending_challenges.cid AND (pending_challenges.ownerid = (?) OR pending_challenges.opponentid = (?))', [uid, uid], function(err, results) {
+  connection.query('SELECT challenges.id, challenges.category, challenges.description, challenges.type, challenges.stakes, pending_challenges.opponentid, pending_challenges.ownerid FROM pending_challenges, challenges WHERE challenges.id = pending_challenges.cid AND (pending_challenges.ownerid = (?) OR pending_challenges.opponentid = (?))', [uid, uid], function(err, results) {
     if (err) {
       return res.status(400).json({
         error: 'Database error',
@@ -422,8 +424,9 @@ app.put('/challenges/:id', function (req, res) {
   const {category} = req.body;
   const {description} = req.body;
   const {type} = req.body;
+  const {stakes} = req.body;
 
-  connection.query('UPDATE challenges SET category=?, description=?, type=? WHERE id=?', [category, description, type, id], function(err, results) {
+  connection.query('UPDATE challenges SET category=?, description=?, type=?, stakes=?, WHERE id=?', [category, description, type, id, stakes], function(err, results) {
     if (err) {
       return res.status(400).json({
         error: 'Database error',

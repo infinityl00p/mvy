@@ -9,10 +9,11 @@ class ChallengePage extends React.Component {
     return(
       <div id='challenge-page' className='container-fluid'>
         <div className='row challenge-header'>
-          <h1 className='col-md-12 title'>{this.props.challengeData.challenge.category}</h1>
           <h2 className='col-md-12 description'>{this.props.challengeData.challenge.description}</h2>
+          <h1 className='col-md-12 title'>{this.props.challengeData.challenge.category}</h1>
           <h4 className='col-md-12 type'>{this.props.challengeData.challenge.type}</h4>
-          <h6 className='col-md-12 instructions'>Instructions: Click the number to check-in</h6>
+          <h4 className='col-md-12 stakes'>${this.props.challengeData.challenge.stakes}</h4>
+          <h6 className='col-md-12 instructions'>Instructions: Click your number to check-in</h6>
         </div>
         <div className='container matchup'>
           <div className='col-md-5'>

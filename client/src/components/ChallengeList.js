@@ -44,7 +44,7 @@ class ChallengeList extends React.Component {
         return (
           <span key={index}>
             <li key={index} className='text'>
-              {challenge.description}
+              ${challenge.stakes} - {challenge.description}
               {this.renderButtons(challenge.id, index)}
             </li>
           </span>
@@ -61,7 +61,7 @@ class ChallengeList extends React.Component {
     if (this.props.userData.userId === this.props.userData.pendingChallenges[index].opponentid) {
       return (
         <span className='pending-button'>
-          <Button type='button' onClick={() => this.acceptChallenge(cid, index)} bsSize='small'>Accept</Button>
+          <Button type='button' onClick={() => this.acceptChallenge(cid, index)} bsSize='small'>Shake on it</Button>
           <Button type='button' onClick={() => this.declineChallenge(cid, index)} bsSize='small'>Decline</Button>
         </span>
       );

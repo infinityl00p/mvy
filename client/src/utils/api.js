@@ -35,7 +35,8 @@ module.exports = {
             id: cid,
             category: response.data.category,
             description: response.data.description,
-            type: response.data.type
+            type: response.data.type,
+            stakes: response.data.stakes
           }
 
         return await axios.get(ROOT_URL + 'challenges/' + cid + '/users');
@@ -71,7 +72,8 @@ module.exports = {
         description: challenge.description,
         type: challenge.type,
         owner: challenge.owner,
-        opponent: challenge.opponent
+        opponent: challenge.opponent,
+        stakes: challenge.stakes
       })
       .then(async (response) => {
         return response.data.insertId;

@@ -16,8 +16,9 @@ class ChallengeModal extends React.Component {
     var description = e.target[1].value;
     var type = e.target[2].value;
     var opponent = e.target[3].value;
+    var stakes = e.target[4].value;
 
-    if (category && description && type) {
+    if (category && description && type && stakes < 1000) {
       var challenge = {
         category: category,
         description: description,
@@ -90,13 +91,18 @@ class ChallengeModal extends React.Component {
                 </FormControl>
               </Col>
             </FormGroup>
+            <FormGroup controlId="formDescription">
+            <Col componentClass={ControlLabel} sm={2}>
+              Stakes ($)
+            </Col>
+            <Col sm={10}>
+              <FormControl type="text" placeholder="Value must be less than 1000" />
+            </Col>
+          </FormGroup>
             <FormGroup>
               <Col smOffset={9} sm={10}>
-                <Button type="reset">
-                  Clear
-                </Button>
                 <Button type="submit">
-                  Submit
+                  Shake on it
                 </Button>
               </Col>
             </FormGroup>
