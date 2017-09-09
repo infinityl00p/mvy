@@ -18,7 +18,7 @@ class ChallengeModal extends React.Component {
     var opponent = e.target[3].value;
     var stakes = e.target[4].value;
 
-    if (category && description && type && stakes < 1000) {
+    if (category && description && type && stakes && stakes < 1000) {
       var challenge = {
         category: category,
         description: description,
