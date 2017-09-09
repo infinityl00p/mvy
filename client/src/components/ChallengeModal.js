@@ -23,7 +23,8 @@ class ChallengeModal extends React.Component {
         category: category,
         description: description,
         type: type,
-        opponent: opponent
+        opponent: opponent,
+        stakes: stakes
       }
 
       //TODO: Error handle if any of the challenge parameters are left empty
