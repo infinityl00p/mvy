@@ -38,7 +38,7 @@ class ChallengeContainer extends React.Component {
   componentDidMount() {
     var challengeId = base62.decode(this.props.match.params.hash);
     api.GetChallengeData(challengeId)
-    .then(async (userChallenge) => {
+    .then((userChallenge) => {
       this.setState({
         challenge: userChallenge.challenge,
         users: userChallenge.users,
@@ -50,10 +50,12 @@ class ChallengeContainer extends React.Component {
   updateUserTally(userId) {
     var today = this.getTodaysDate();
     var lastDate = new Date(this.state.users[userId-1].lastDate);
-
+    console.log('today' + today);
+    console.log('lastDate' + lastDate);
     if (today.getTime() !== lastDate.getTime()) {
+      console.log("here")
       return api.CheckIn(this.state.challenge.id, userId, today)
-      .then(async (response) => {
+      .then((response) => {
         var users = this.state.users;
         users[userId-1].tally = users[userId-1].tally + 1;
         users[userId-1].lastDate = today;

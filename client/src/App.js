@@ -33,7 +33,7 @@ class App extends React.Component {
 
   componentWillMount() {
     api.CheckAuth()
-    .then(async (response) => {
+    .then((response) => {
       this.setUserData(response.userId);
     })
     .catch((err) => {
@@ -49,7 +49,7 @@ class App extends React.Component {
 
   signout() {
     api.SignOut()
-    .then(async (response) => {
+    .then((response) => {
       this.setState({
         auth: {
           loggedIn: false
@@ -68,22 +68,22 @@ class App extends React.Component {
     let userData = {}
 
     api.getUserChallenges(userId)
-    .then(async (challenges) => {
+    .then((challenges) => {
       userData.challenges = challenges;
     })
 
     api.getPendingChallenges(userId)
-    .then(async (pendingChallenges) => {
+    .then((pendingChallenges) => {
       userData.pendingChallenges = pendingChallenges;
     })
 
     api.getUserName(userId)
-    .then(async (name) => {
+    .then((name) => {
       userData.name = name;
     })
 
     api.getOpponents(userId)
-    .then(async (opponents) => {
+    .then((opponents) => {
       userData.opponents = opponents;
       userData.userId = userId;
 
@@ -125,7 +125,7 @@ class App extends React.Component {
     challenge.owner = this.state.userData.userId;
 
     return api.CreateChallenge(challenge)
-    .then(async (cid) => {
+    .then((cid) => {
       var newChallenge = {
         category: challenge.category,
         description: challenge.description,
