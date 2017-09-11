@@ -49,7 +49,6 @@ class ChallengeContainer extends React.Component {
 
   updateUserTally(userId) {
     var today = this.getTodaysDate();
-    console.log("before manip" + this.state.users[userId-1].lastDate);
     var lastDate = new Date(this.state.users[userId-1].lastDate);
     console.log('today' + today);
     console.log('lastDate' + lastDate);
@@ -69,8 +68,10 @@ class ChallengeContainer extends React.Component {
 
   getTodaysDate() {
     var today = new Date();
-    today.toISOString().slice(0, 10);
-    today.setHours(0,0,0,0);
+    var year = today.getFullYear();
+    var month = ("0" + (today.getMonth()+1)).slice(-2);
+    var day = ("0" + today.getDate()).slice(-2);
+    today = year + "-" + month + "-" + day + "T00:00:00.000Z";
 
     return today;
   }
