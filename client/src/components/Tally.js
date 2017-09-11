@@ -1,17 +1,31 @@
 import React from 'react';
-import VerticalTally from './VerticalTally';
-import '../stylesheets/Tally.css'
+import '../stylesheets/Tally.css';
 
 class Tally extends React.Component {
+  renderTallyLine() {
+    var tallyArray = []
+
+    for (var i = 1; i <= this.props.tally; i++) {
+      tallyArray.push(
+        <tr key={i}>
+          <td key={i}>X</td>
+        </tr>
+      )
+    }
+
+    return tallyArray;
+  }
+
   render() {
+    var verticalTally = "vertical-tally"
+    var alignmentClass = verticalTally + " " + this.props.alignment;
     return(
-      <div>
-        <VerticalTally alignment={'left'} tally={this.props.tally[0]} />
-        <div className='divider'>
-          <div className='inner'>
-          </div>
-        </div>
-        <VerticalTally alignment={'right'} tally={this.props.tally[1]} />
+      <div className={alignmentClass}>
+        <table>
+          <tbody>
+            {this.renderTallyLine()}
+          </tbody>
+        </table>
       </div>
     )
   }

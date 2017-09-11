@@ -11,7 +11,7 @@ class ActionBar extends React.Component {
           Welcome {this.props.name}!
         </span>
         <span className='routes'>
-          <Link to='/' className='link' style={{ textDecoration: 'none' }}>Home</Link>
+          <Link to='/' className='link'>Dashboard</Link>
         </span>
         <span className='action' onClick={this.props.signout}>
           Sign Out

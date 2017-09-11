@@ -1,6 +1,6 @@
 var axios = require('axios');
 
-const ROOT_URL = 'https://mevsu.herokuapp.com/';
+const ROOT_URL = 'http://localhost:3001/';
 
 module.exports = {
   CheckAuth: async function() {
@@ -76,7 +76,7 @@ module.exports = {
         stakes: challenge.stakes
       })
       .then(async (response) => {
-        return response.data.insertId;
+        return response.data;
       })
   },
 
@@ -89,14 +89,10 @@ module.exports = {
       },
       withCredentials: true
     })
-    .catch((err) => {
-      console.log(err);
-    })
     .then(async (response) => {
       if (response.status === 200) {
         return response.data.userId;
       }
-      //TODO: else handle invalid email or password
     })
   },
 

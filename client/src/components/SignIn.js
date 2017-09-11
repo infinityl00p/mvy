@@ -7,6 +7,7 @@ const api = require('../utils/api');
 class SignIn extends React.Component {
   constructor(props) {
     super(props);
+
     this.handleSubmit = this.handleSubmit.bind(this);
     this.updatePassword = this.updatePassword.bind(this);
     this.toggleShowPassword = this.toggleShowPassword.bind(this);
@@ -25,8 +26,11 @@ class SignIn extends React.Component {
     if (email && password) {
       api.SignIn(email, password)
       .then((uid) => {
-        this.props.signin(uid);
-        this.props.setUserData(uid);
+        if(uid) {
+          this.props.setUserData(uid);
+        } else {
+          alert("Invalid email or password");
+        }
       })
     } else {
       alert("Email and Password required");

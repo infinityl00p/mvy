@@ -18,7 +18,7 @@ app.set('port', (process.env.PORT || 3001));
 
 app.use(cors({
   credentials: true,
-  origin: 'https://mevsu.herokuapp.com/'
+  origin: 'http://localhost:3000'
 }));
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -55,7 +55,7 @@ passport.deserializeUser(function(user, done) {
   connection.query('SELECT * FROM users WHERE id=?', user, function(err, userId) {
     if (err) {
       res.status(400).json({
-        error: 'Database Error',
+        error: 'Database Error - Unable to find user',
         id: userId[0]
       });
     }
@@ -87,7 +87,7 @@ passport.use(new LocalStrategy({
 
 
 app.post('/signin', passport.authenticate('local'), function(req, res) {
-  res.status(200).json({
+  return res.status(200).json({
     status: 'Successfully Signed In!',
     userId: req.session.passport.user
   });
@@ -98,12 +98,9 @@ function isAuthenticated (req,res,next){
   if(req.session.passport){
     return next();
   } else {
-     return res.status(401).json({
-       error: 'User not authenticated'
-     })
+    res.sendStatus(401);
   }
 }
-
 
 app.get('/checkauth', isAuthenticated, function(req,res) {
   res.status(200).json({

@@ -1,11 +1,13 @@
-.divider {
-  height: 420px;
-  position: absolute;
-  width: 100%;
+.vertical-tally {
+  font-size: 10px;
 }
 
-.inner {
-  height: inherit;
-  width: 40%;
-  border-right: 1px solid black;
+.vertical-tally.left {
+  position: absolute;
+  margin-left: 50px;
+}
+
+.vertical-tally.right {
+  position: absolute;
+  margin-left: 95px;
 }
