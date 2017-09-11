@@ -49,10 +49,10 @@ class ChallengeContainer extends React.Component {
 
   updateUserTally(userId) {
     var today = this.getTodaysDate();
-    var lastDate = new Date(this.state.users[userId-1].lastDate);
+    var lastDate = this.state.users[userId-1].lastDate;
     console.log('today' + today);
     console.log('lastDate' + lastDate);
-    if (today.getTime() !== lastDate.getTime()) {
+    if (today !== lastDate) {
       return api.CheckIn(this.state.challenge.id, userId, today)
       .then((response) => {
         var users = this.state.users;
