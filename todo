@@ -1,0 +1,9 @@
+Todo
+----
+2. Consistent, reusable classnames
+3. Write a reusable actionBar, links &left/right sides?
+    - DOM and container
+4. Only pass {...props} through to components
+5. Reorganize ChallengeList, use react model - Done
+7. Think about a reusable modal
+8. Rename tally/verticle tally components

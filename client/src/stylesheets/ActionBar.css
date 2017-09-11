@@ -21,6 +21,7 @@
 
 .action-bar .link {
   color: #333;
+  text-decoration: none;
 }
 
 .action-bar .action:hover, .link:hover {

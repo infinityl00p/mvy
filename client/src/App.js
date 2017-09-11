@@ -2,6 +2,7 @@ import React from 'react';
 import Routes from './routes/Routes';
 import SignIn from './components/SignIn';
 import ActionBar from './components/ActionBar';
+import Loading from './components/Loading';
 import './stylesheets/App.css';
 
 const api = require('./utils/api');
@@ -10,7 +11,6 @@ class App extends React.Component {
   constructor() {
     super();
 
-    this.signin = this.signin.bind(this);
     this.setUserData = this.setUserData.bind(this);
     this.updateChallenges = this.updateChallenges.bind(this);
     this.createChallenge = this.createChallenge.bind(this);
@@ -33,7 +33,7 @@ class App extends React.Component {
 
   componentWillMount() {
     api.CheckAuth()
-    .then((response) => {
+    .then(async (response) => {
       this.setUserData(response.userId);
     })
     .catch((err) => {
@@ -47,13 +47,9 @@ class App extends React.Component {
     })
   }
 
-  signin(userId) {
-    this.setUserData(userId);
-  }
-
   signout() {
     api.SignOut()
-    .then((response) => {
+    .then(async (response) => {
       this.setState({
         auth: {
           loggedIn: false
@@ -72,22 +68,22 @@ class App extends React.Component {
     let userData = {}
 
     api.getUserChallenges(userId)
-    .then((challenges) => {
+    .then(async (challenges) => {
       userData.challenges = challenges;
     })
 
     api.getPendingChallenges(userId)
-    .then((pendingChallenges) => {
+    .then(async (pendingChallenges) => {
       userData.pendingChallenges = pendingChallenges;
     })
 
     api.getUserName(userId)
-    .then((name) => {
+    .then(async (name) => {
       userData.name = name;
     })
 
     api.getOpponents(userId)
-    .then((opponents) => {
+    .then(async (opponents) => {
       userData.opponents = opponents;
       userData.userId = userId;
 
@@ -105,10 +101,12 @@ class App extends React.Component {
   updateChallenges(index, action) {
     var pendingChallenges = this.state.userData.pendingChallenges;
     var challenges = this.state.userData.challenges;
+
     if (action === 'add') {
       challenges.push(pendingChallenges.splice(index, 1)[0]);
     } else if (action === 'remove') {
-      pendingChallenges = pendingChallenges.splice(index, 1)[0];
+      //TODO: fix this
+      pendingChallenges.splice(index, 1);
     }
 
     this.setState({
@@ -127,24 +125,25 @@ class App extends React.Component {
     challenge.owner = this.state.userData.userId;
 
     return api.CreateChallenge(challenge)
-    .then((cid) => {
+    .then(async (cid) => {
       var newChallenge = {
-        id: cid,
         category: challenge.category,
         description: challenge.description,
         type: challenge.type,
+        ownerid: this.state.userData.userId,
         opponentid: challenge.opponent,
-        stakes: this.state.userData.stakes
+        stakes: challenge.stakes
       }
 
       var pendingChallenges = [...this.state.userData.pendingChallenges, newChallenge];
 
       this.setState({
         userData: {
+          name: this.state.userData.name,
+          userId: this.state.userData.userId,
           pendingChallenges: pendingChallenges,
           challenges: this.state.userData.challenges,
           opponents: this.state.userData.opponents,
-          userId: this.state.userData.userId,
           stakes: this.state.userData.stakes
         }
       });
@@ -154,20 +153,7 @@ class App extends React.Component {
   render() {
     if (this.state.isLoading) {
       return(
-        <div className="sk-circle">
-          <div className="sk-circle1 sk-child"></div>
-          <div className="sk-circle2 sk-child"></div>
-          <div className="sk-circle3 sk-child"></div>
-          <div className="sk-circle4 sk-child"></div>
-          <div className="sk-circle5 sk-child"></div>
-          <div className="sk-circle6 sk-child"></div>
-          <div className="sk-circle7 sk-child"></div>
-          <div className="sk-circle8 sk-child"></div>
-          <div className="sk-circle9 sk-child"></div>
-          <div className="sk-circle10 sk-child"></div>
-          <div className="sk-circle11 sk-child"></div>
-          <div className="sk-circle12 sk-child"></div>
-        </div>
+        <Loading />
       )
     }
     if (this.state.auth.loggedIn && this.state.isLoading === false) {
@@ -187,7 +173,6 @@ class App extends React.Component {
     }
       return(
         <SignIn
-          signin={this.signin}
           setUserData={this.setUserData}
         />
       );

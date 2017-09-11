@@ -6,3 +6,7 @@
 .text {
   margin-bottom: 10px;
 }
+
+.pending-button .accept {
+  margin-right: 10px;
+}

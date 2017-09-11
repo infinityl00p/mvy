@@ -1,6 +1,7 @@
 import React from 'react';
 import base62 from 'base62';
 import ChallengePage from './ChallengePage';
+import Loading from './Loading';
 
 const api = require('../utils/api');
 
@@ -37,7 +38,7 @@ class ChallengeContainer extends React.Component {
   componentDidMount() {
     var challengeId = base62.decode(this.props.match.params.hash);
     api.GetChallengeData(challengeId)
-    .then((userChallenge) => {
+    .then(async (userChallenge) => {
       this.setState({
         challenge: userChallenge.challenge,
         users: userChallenge.users,
@@ -52,7 +53,7 @@ class ChallengeContainer extends React.Component {
 
     if (today.getTime() !== lastDate.getTime()) {
       return api.CheckIn(this.state.challenge.id, userId, today)
-      .then((response) => {
+      .then(async (response) => {
         var users = this.state.users;
         users[userId-1].tally = users[userId-1].tally + 1;
         users[userId-1].lastDate = today;
@@ -75,20 +76,7 @@ class ChallengeContainer extends React.Component {
   render() {
     if (this.state.isLoading) {
       return (
-        <div className="sk-circle">
-          <div className="sk-circle1 sk-child"></div>
-          <div className="sk-circle2 sk-child"></div>
-          <div className="sk-circle3 sk-child"></div>
-          <div className="sk-circle4 sk-child"></div>
-          <div className="sk-circle5 sk-child"></div>
-          <div className="sk-circle6 sk-child"></div>
-          <div className="sk-circle7 sk-child"></div>
-          <div className="sk-circle8 sk-child"></div>
-          <div className="sk-circle9 sk-child"></div>
-          <div className="sk-circle10 sk-child"></div>
-          <div className="sk-circle11 sk-child"></div>
-          <div className="sk-circle12 sk-child"></div>
-        </div>
+        <Loading />
       )
     }
     return(

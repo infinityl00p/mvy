@@ -1,6 +1,6 @@
 import React from 'react';
 import GameContainer from './GameContainer';
-import Tally from './Tally';
+import TallyLine from './TallyLine';
 import '../stylesheets/ChallengePage.css';
 
 
@@ -25,7 +25,7 @@ class ChallengePage extends React.Component {
             />
           </div>
           <div className='col-md-2'>
-            <Tally
+            <TallyLine
               tally={[this.props.challengeData.users[0].tally, this.props.challengeData.users[1].tally]}
             />
           </div>

@@ -14,9 +14,11 @@ class ChallengeListItem extends React.Component {
 
   render() {
     return(
-      <span>
-        <Link to={this.getUrlPath()}>${this.props.challenge.stakes} - {this.props.challenge.description}</Link>
-      </span>
+      <li key={this.props.challenge.id} className='text'>
+          <Link to={this.getUrlPath()}>
+            Challenge - {this.props.challenge.description}
+          </Link>
+      </li>
     )
   }
 }
