@@ -18,7 +18,7 @@ app.set('port', (process.env.PORT || 3001));
 
 app.use(cors({
   credentials: true,
-  origin: 'https://mevsu.herokuapp.com/'
+  origin: 'http://mevsu.herokuapp.com/'
 }));
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -379,28 +379,6 @@ app.route('/challenges/:cid/users/:uid')
   const {cid} = req.params;
   const {uid} = req.params;
   const {today} = req.body;
-
-  connection.query('INSERT INTO tally (cid, uid, date_completed) VALUES (?, ?, ?)', [cid, uid, today], function(err, results) {
-    if (err) {
-      return res.status(400).json({
-        error: 'Database Error',
-        cid: cid,
-        uid: uid
-      });
-    } else {
-      return res.status(200).json({success: 'Challenge successfully updated'});
-    }
-  })
-});
-
-
-app.post('/challenges/:cid/users/:uid', function (req, res) {
-  const {cid} = req.params;
-  const {uid} = req.params;
-
-  //TODO: This should be passed client side so we have clients date and not servers date
-  var today = new Date();
-  today.toISOString().substring(0, 10);
 
   connection.query('INSERT INTO tally (cid, uid, date_completed) VALUES (?, ?, ?)', [cid, uid, today], function(err, results) {
     if (err) {
