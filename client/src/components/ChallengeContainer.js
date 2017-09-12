@@ -37,7 +37,7 @@ class ChallengeContainer extends React.Component {
 
   componentDidMount() {
     var challengeId = base62.decode(this.props.match.params.hash);
-    console.log(challengeId);
+    console.log("challengeId: " + challengeId);
     api.GetChallengeData(challengeId)
     .then((userChallenge) => {
       this.setState({

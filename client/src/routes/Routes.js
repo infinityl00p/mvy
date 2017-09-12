@@ -6,6 +6,8 @@ import ChallengeContainer from '../components/ChallengeContainer';
 
 class Routes extends React.Component{
   render() {
+    console.log("in routes");
+    console.log("props: " + this.props);
     return (
       <Switch>
         <Redirect from='/signin' to='/'/>
