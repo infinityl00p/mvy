@@ -1,0 +1,56 @@
+Arguments: 
+  /usr/local/bin/node /usr/local/bin/yarn build
+
+PATH: 
+  /Users/jamessinghgill/Desktop/10in10/mvy/node_modules/.bin:/Users/jamessinghgill/.config/yarn/link/node_modules/.bin:/Users/jamessinghgill/Desktop/10in10/mvy/node_modules/.bin:/Users/jamessinghgill/.config/yarn/link/node_modules/.bin:/usr/local/lib/node_modules/npm/bin/node-gyp-bin:/usr/local/bin/node_modules/npm/bin/node-gyp-bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/go/bin:/Applications/Wireshark.app/Contents/MacOS
+
+Yarn version: 
+  0.27.5
+
+Node version: 
+  8.1.2
+
+Platform: 
+  darwin x64
+
+npm manifest: 
+  {
+    "name": "mvy-client",
+    "version": "0.1.0",
+    "private": true,
+    "proxy": "http://localhost:3001/",
+    "devDependencies": {
+      "enzyme": "2.4.1",
+      "react-addons-test-utils": "15.4.0",
+      "react-scripts": "0.8.5"
+    },
+    "dependencies": {
+      "react": "15.6.1",
+      "react-dom": "15.6.1",
+      "bootstrap":"^3.3.7",
+      "react-bootstrap":"^0.31.0",
+      "react-router": "^3.0.0",
+      "axios": "0.16.2",
+    },
+    "scripts": {
+      "start": "react-scripts start",
+      "build": "react-scripts build",
+      "test": "react-scripts test --env=jsdom",
+      "eject": "react-scripts eject"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
+
+Trace: 
+  SyntaxError: /Users/jamessinghgill/Desktop/10in10/mvy/client/package.json: Unexpected token } in JSON at position 409
+      at JSON.parse (<anonymous>)
+      at /usr/local/lib/node_modules/yarn/lib/util/fs.js:554:57
+      at Generator.next (<anonymous>)
+      at step (/usr/local/lib/node_modules/yarn/node_modules/babel-runtime/helpers/asyncToGenerator.js:17:30)
+      at /usr/local/lib/node_modules/yarn/node_modules/babel-runtime/helpers/asyncToGenerator.js:28:13
+      at <anonymous>
