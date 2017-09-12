@@ -28,9 +28,10 @@ class SignIn extends React.Component {
       .then((uid) => {
         if(uid) {
           this.props.setUserData(uid);
-        } else {
-          alert("Invalid email or password");
         }
+      })
+      .catch((err) => {
+        alert('Invalid email or password');
       })
     } else {
       alert("Email and Password required");
