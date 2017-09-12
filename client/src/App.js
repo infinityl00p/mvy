@@ -151,6 +151,7 @@ class App extends React.Component {
   }
 
   render() {
+    console.log("Loading app");
     if (this.state.isLoading) {
       return(
         <Loading />
